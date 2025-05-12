@@ -12,6 +12,8 @@ const passport = require("passport");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
+const featureRoutes = require('./routes/featureRequests');
+
 const apiRouter = require('./routes/api')
 const apiChatRouter = require('./routes/chat')
 const authRoutes = require('./routes/auth');
@@ -47,9 +49,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use('/api/businesses', apiRouter)
-app.use('/api/chat', apiChatRouter)
-app.use('/api/auth', authRoutes);
+
 
 
 //Logging
@@ -58,11 +58,24 @@ app.use(logger("dev"));
 //Use flash messages for errors, info, ect...
 app.use(flash());
 
+
+app.use('/featureRequests', featureRoutes);
+
+
+app.use('/api/businesses', apiRouter)
+app.use('/api/chat', apiChatRouter)
+app.use('/api/auth', authRoutes);
+
 app.get('/', (req, res) => {
-  res.render('index', {
-    user: req.user || null,
-    messages: req.flash()
-  });
+  res.render('index', { user: req.user || null, messages: req.flash() });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', { user: req.user });
+});
+
+app.get('/developers', (req, res) => {
+  res.render('developers', { user: req.user });
 });
 
 app.listen(process.env.PORT, () => {

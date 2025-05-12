@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About | Vozmia</title>
+  <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-white text-gray-700">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-300 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-lg font-semibold text-yellow-500">Vozmia</h1>
+    <div class="flex items-center gap-6">
+      <a href="/" class="text-sm text-gray-500 hover:text-black font-medium">Home</a>
+      <a href="/featureRequests" class="text-sm text-gray-500 hover:text-black font-medium">Feature Requests</a>
+      <% if (user) { %>
+        <span class="text-sm">Welcome, <%= user.name %></span>
+      <% } else { %>
+        <button id="openAuthModalBtn" class="text-sm text-blue-600 underline">Register / Login</button>
+      <% } %>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto py-12 px-6">
+    <h2 class="text-3xl font-bold text-yellow-500 mb-6">About Vozmia</h2>
+
+    <p class="mb-6 text-lg leading-relaxed border-l-4 border-yellow-500 pl-4">
+      <strong>Vozmia</strong> is an AI-ready business directory designed to help users connect directly with local businesses through smart, conversational interfaces.
+      Our mission is to empower businesses to teach the AI what they truly are—by simply answering questions.
+    </p>
+
+    <div class="space-y-6 text-gray-700">
+      <section>
+        <h3 class="text-xl font-semibold mb-2">Learning Like a Baby</h3>
+        <p>
+          Our AI doesn't assume—it asks. Like a child learning its first words, Vozmia's chatbot starts with questions and learns from the source: the business owners themselves. This approach minimizes hallucinations and ensures answers are accurate, trustworthy, and human-approved.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="text-xl font-semibold mb-2">Training With Every Interaction</h3>
+        <p>
+          When a customer asks a question—like "Do you offer gluten-free options?"—and the owner replies "Yes, every item is customizable!", Vozmia learns that response. From then on, the AI can answer that question instantly and reliably.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="text-xl font-semibold mb-2">A Smarter Local Experience</h3>
+        <p>
+          Vozmia bridges the gap between automation and authenticity. We believe that the best AI is one that listens first—then speaks from real knowledge. Each business trains its own assistant, and customers benefit from faster, clearer support.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-300 py-4 text-center text-sm text-gray-500">
+    &copy; <%= new Date().getFullYear() %> Vozmia. All rights reserved.
+  </footer>
+
+</body>
+</html>
