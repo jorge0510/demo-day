@@ -11,7 +11,7 @@ let chatHistory = []; // Keep track of conversation history
 let currentBusinessName = ''; // Set this when opening the chat modal
 
 
-// on chat button clicked
+// on chat button clicked - chat modal open
 businessContainer.addEventListener('click', (event) => {
     const chatButton = event.target.closest('.chatNowBusinessButton');
     if (chatButton) {
@@ -24,6 +24,11 @@ businessContainer.addEventListener('click', (event) => {
         chatHeader.innerText = `Chat with ${businessName}`;
         chatModal.classList.remove('hidden');
         chatBackdrop.classList.remove('hidden');
+        
+        // ✅ Focus the input after a short delay to ensure the modal is visible
+        setTimeout(() => {
+          document.getElementById('chatInput')?.focus();
+        }, 100);
     }
 });
 
@@ -95,6 +100,84 @@ document.getElementById('chatForm').addEventListener('submit', async (e) => {
     chatMessages.removeChild(typingBubble);
     addChatBubble('ai', 'Network error. Please try again later.');
     console.error('Chat error:', err);
+  }
+});
+
+
+// business category filter
+document.querySelectorAll('.categoryFilterBtn').forEach(button => {
+  button.addEventListener('click', async () => {
+    const category = button.dataset.category || '';
+
+    // Remove highlight from all buttons
+    document.querySelectorAll('.categoryFilterBtn').forEach(btn => {
+      btn.classList.remove('bg-yellow-500', 'text-white');
+    });
+
+    // Add highlight to all buttons with matching category
+    document.querySelectorAll(`.categoryFilterBtn[data-category="${category}"]`).forEach(btn => {
+      btn.classList.add('bg-yellow-500', 'text-white');
+    });
+
+    // Fetch and render businesses
+    try {
+      const data = await fetchBusinesses({ category });
+      renderBusinesses(data);
+    } catch (err) {
+      console.error('Failed to fetch by category:', err);
+    }
+  });
+});
+
+//zipcode filter
+const zipcodeModal = document.getElementById('zipcodeModal');
+const zipcodeBackdrop = document.getElementById('zipcodeModalBackdrop');
+const openZipcodeBtn = document.getElementById('openZipcodeModal');
+const closeZipcodeBtn = document.getElementById('closeZipcodeModal');
+const zipcodeForm = document.getElementById('zipcodeForm');
+const zipcodeInput = document.getElementById('zipcodeInput');
+
+function toggleZipcodeModal(visible) {
+  zipcodeModal.classList.toggle('hidden', !visible);
+  zipcodeBackdrop.classList.toggle('hidden', !visible);
+}
+
+openZipcodeBtn.addEventListener('click', () => toggleZipcodeModal(true));
+closeZipcodeBtn.addEventListener('click', () => toggleZipcodeModal(false));
+zipcodeBackdrop.addEventListener('click', () => toggleZipcodeModal(false));
+
+zipcodeForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const zip = zipcodeInput.value.trim();
+
+  if (!/^\d{5}$/.test(zip)) return;
+
+  toggleZipcodeModal(false);
+
+  try {
+    const data = await fetchBusinesses({ zipcode: zip });
+    renderBusinesses(data);
+    Array.from(document.getElementsByClassName("zipText")).forEach(e => {
+      e.innerText = zip;
+    });
+  } catch (err) {
+    console.error('Failed to fetch by zipcode:', err);
+  }
+});
+
+//search filter
+const searchForm = document.getElementById('searchForm');
+const searchInput = document.getElementById('searchInput');
+
+searchForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const search = searchInput.value.trim();
+
+  try {
+    const data = await fetchBusinesses({ search });
+    renderBusinesses(data);
+  } catch (err) {
+    console.error('Search failed:', err);
   }
 });
 
@@ -249,27 +332,29 @@ const renderBusinesses = (businessList) => {
 };
 
 
-async function fetchBusinesses({ category = '', zipcode = '', page = 1, limit = 10 } = {}) {
-    const queryParams = new URLSearchParams();
+async function fetchBusinesses({ category = '', zipcode = '', search = '', page = 1, limit = 10 } = {}) {
+  const queryParams = new URLSearchParams();
 
-    if (category) queryParams.append('category', category);
-    if (zipcode) queryParams.append('zipcode', zipcode);
-    queryParams.append('page', page);
-    queryParams.append('limit', limit);
+  if (category) queryParams.append('category', category);
+  if (zipcode) queryParams.append('zipcode', zipcode);
+  if (search) queryParams.append('search', search);
 
-    try {
-        const res = await fetch(`/api/businesses?${queryParams}`);
-        const data = await res.json();
+  queryParams.append('page', page);
+  queryParams.append('limit', limit);
 
-        if (!res.ok) {
-        throw new Error(data.error || 'Failed to fetch businesses');
-        }
+  try {
+    const res = await fetch(`/api/businesses?${queryParams}`);
+    const data = await res.json();
 
-        return data;
-    } catch (error) {
-        console.error('API Error:', error);
-        throw error;
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fetch businesses');
     }
+
+    return data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
 }
 
 

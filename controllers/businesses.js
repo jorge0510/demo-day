@@ -14,11 +14,21 @@ exports.createBusiness = async (req, res) => {
 // Get all businesses with optional filtering and pagination
 exports.getAllBusinesses = async (req, res) => {
   try {
-    const { category, zipcode, page = 1, limit = 10 } = req.query;
+    const { category, zipcode, search, page = 1, limit = 10 } = req.query;
     const query = {};
 
     if (category) query.category = category;
-    if (zipcode) query.address = { $regex: zipcode, $options: 'i' };
+    if (zipcode) query.zipCode = { $regex: zipcode, $options: 'i' };
+
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+      query.$or = [
+        { name: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex },
+        { city: searchRegex }
+      ];
+    }
 
     const businesses = await Business.find(query)
       .skip((page - 1) * limit)

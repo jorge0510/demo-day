@@ -8,6 +8,7 @@ const businessSchema = new mongoose.Schema({
   subcategory: { type: String },
   address: { type: String, required: true },
   city: { type: String },
+  state: { type: String },
   zipCode: { type: String },
   description: { type: String },
 
