@@ -10,10 +10,29 @@ const chatHeader = document.getElementById('chatHeader');
 let chatHistory = []; // Keep track of conversation history
 let currentBusinessName = ''; // Set this when opening the chat modal
 
+//review modal
+const reviewsModal = document.getElementById('reviewsModal');
+const reviewsBackdrop = document.getElementById('reviewsModalBackdrop');
+const closeReviewsBtn = document.getElementById('closeReviewsModal');
+const reviewsContainer = document.getElementById('reviewsContainer');
+let businessId = null;
+
+function toggleReviewsModal(visible) {
+  reviewsModal.classList.toggle('hidden', !visible);
+  reviewsBackdrop.classList.toggle('hidden', !visible);
+  if (!visible) reviewsContainer.innerHTML = ''; // Reset on close
+}
+
+// review modal Close logic
+closeReviewsBtn.addEventListener('click', () => toggleReviewsModal(false));
+reviewsBackdrop.addEventListener('click', () => toggleReviewsModal(false));
+
 
 // on chat button clicked - chat modal open
-businessContainer.addEventListener('click', (event) => {
+businessContainer.addEventListener('click', async (event) => {
     const chatButton = event.target.closest('.chatNowBusinessButton');
+    const reviewsBusinessButton = event.target.closest('.reviewsBusinessButton');
+
     if (chatButton) {
         const businessName = chatButton.closest('[data-business-name]')?.dataset?.businessName || 'the business';
         
@@ -24,11 +43,35 @@ businessContainer.addEventListener('click', (event) => {
         chatHeader.innerText = `Chat with ${businessName}`;
         chatModal.classList.remove('hidden');
         chatBackdrop.classList.remove('hidden');
-        
+
         // ✅ Focus the input after a short delay to ensure the modal is visible
         setTimeout(() => {
           document.getElementById('chatInput')?.focus();
         }, 100);
+    } else if (reviewsBusinessButton) {
+      businessId = reviewsBusinessButton.dataset.id;
+      try {
+        const res = await fetch(`/api/businesses/${businessId}/reviews`);
+        const data = await res.json();
+
+        if (!Array.isArray(data)) throw new Error('Invalid review data');
+
+        // Render reviews
+        data.forEach(review => {
+          const div = document.createElement('div');
+          div.className = 'border-b pb-2 border-gray-200';
+          div.innerHTML = `
+            <div class="text-left text-sm font-semibold">${review.user || 'Anonymous'}</div>
+            <div class="text-left text-yellow-500 text-xs">Rating: ${review.rating}/5</div>
+            <div class="text-left text-gray-700 text-sm">${review.comment}</div>
+          `;
+          reviewsContainer.appendChild(div);
+        });
+
+        toggleReviewsModal(true);
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err);
+      }
     }
 });
 
@@ -100,6 +143,50 @@ document.getElementById('chatForm').addEventListener('submit', async (e) => {
     chatMessages.removeChild(typingBubble);
     addChatBubble('ai', 'Network error. Please try again later.');
     console.error('Chat error:', err);
+  }
+});
+
+//review form
+const reviewForm = document.getElementById('reviewForm');
+const reviewUser = document.getElementById('reviewUser');
+const reviewComment = document.getElementById('reviewComment');
+const reviewRating = document.getElementById('reviewRating');
+
+reviewForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const review = {
+    user: reviewUser.value.trim(),
+    comment: reviewComment.value.trim(),
+    rating: parseFloat(reviewRating.value)
+  };
+
+  if (!review.user || !review.comment || !review.rating || !businessId) return;
+
+  try {
+    const res = await fetch(`/api/businesses/${businessId}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(review)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to submit review');
+
+    // Add new review to the top of the list
+    const div = document.createElement('div');
+    div.className = 'border-b pb-2';
+    div.innerHTML = `
+      <div class="text-sm font-semibold">${data.user || 'Anonymous'}</div>
+      <div class="text-yellow-500 text-xs">Rating: ${data.rating}/5</div>
+      <div class="text-gray-700 text-sm">${data.comment}</div>
+    `;
+    reviewsContainer.prepend(div);
+
+    reviewForm.reset();
+  } catch (err) {
+    console.error('Review submission error:', err);
+    alert('Failed to submit review. Please try again.');
   }
 });
 
@@ -195,16 +282,15 @@ const renderBusinesses = (businessList) => {
       description,
       image,
       featured,
-      rating,
-      reviews,
+      reviewData,
       address,
       phone,
       amenities = []
     } = business;
 
     const imageUrl = image || 'https://place-hold.it/128';
-    const displayRating = rating?.toFixed(1) || 'N/A';
-    const reviewCount = reviews || 0;
+    const displayRating = reviewData.rating ? (reviewData.reduce( (a, c) => a = c.rating)/reviewData.length).toFixed(1) : 5;
+    const reviewCount = reviewData.length || 0;
 
     const featuredBadge = featured
       ? `<div class="absolute top-0 left-0 w-full bg-yellow-500 text-white text-xs font-medium py-1 px-2 text-center">Featured</div>`
@@ -226,7 +312,7 @@ const renderBusinesses = (businessList) => {
               <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:hidden">
                 <div class="flex items-center text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <span class="font-medium">${displayRating}</span>
+                  <span class="font-medium">${ displayRating }</span>
                   <span class="text-white/80 text-xs ml-1">(${reviewCount})</span>
                 </div>
               </div>
@@ -249,7 +335,7 @@ const renderBusinesses = (businessList) => {
                       </svg>
                       <span>${category || 'N/A'}</span>
                     </div>
-                    <div class="hidden sm:flex items-center text-yellow-500">
+                    <div class="reviewsBusinessButton cursor-pointer hidden sm:flex items-center text-yellow-500" data-id="${business._id}">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-yellow-500 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                       </svg>
@@ -311,24 +397,24 @@ const renderBusinesses = (businessList) => {
   });
 
   // add pagination
-  businessContainer.innerHTML += `
-    <div class="flex justify-center mt-8">
-        <div class="flex items-center space-x-2">
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" disabled="" aria-label="Previous page">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left h-4 w-4">
-                <path d="m15 18-6-6 6-6"></path>
-            </svg>
-            </button>
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground h-10 w-10 bg-yellow-500 hover:bg-yellow-600" aria-label="Page 1" aria-current="page">1</button>
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" aria-label="Page 2">2</button>
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" aria-label="Next page">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right h-4 w-4">
-                <path d="m9 18 6-6-6-6"></path>
-            </svg>
-            </button>
-        </div>
-    </div>
-  `
+  // businessContainer.innerHTML += `
+  //   <div class="flex justify-center mt-8">
+  //       <div class="flex items-center space-x-2">
+  //           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" disabled="" aria-label="Previous page">
+  //           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left h-4 w-4">
+  //               <path d="m15 18-6-6 6-6"></path>
+  //           </svg>
+  //           </button>
+  //           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground h-10 w-10 bg-yellow-500 hover:bg-yellow-600" aria-label="Page 1" aria-current="page">1</button>
+  //           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" aria-label="Page 2">2</button>
+  //           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10" aria-label="Next page">
+  //           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right h-4 w-4">
+  //               <path d="m9 18 6-6-6-6"></path>
+  //           </svg>
+  //           </button>
+  //       </div>
+  //   </div>
+  // `
 };
 
 

@@ -6,7 +6,7 @@ exports.addReview = async (req, res) => {
     const { id } = req.params; // Business ID
     const review = req.body;
 
-    const business = await Business.findOne({ id });
+    const business = await Business.findOne({_id: id });
 
     if (!business) {
       return res.status(404).json({ error: 'Business not found' });
@@ -24,9 +24,9 @@ exports.addReview = async (req, res) => {
 // Get all reviews for a business
 exports.getReviews = async (req, res) => {
   try {
-    const { _id } = req.params;
+    const { id } = req.params;
 
-    const business = await Business.findOne({ _id });
+    const business = await Business.findOne({ _id: id });
 
     if (!business) {
       return res.status(404).json({ error: 'Business not found' });
@@ -41,10 +41,10 @@ exports.getReviews = async (req, res) => {
 // Update a review (by review index)
 exports.updateReview = async (req, res) => {
   try {
-    const { _id, reviewIndex } = req.params;
+    const { id, reviewIndex } = req.params;
     const updatedData = req.body;
 
-    const business = await Business.findOne({ _id });
+    const business = await Business.findOne({_id: id });
 
     if (!business || !business.reviewData[reviewIndex]) {
       return res.status(404).json({ error: 'Review not found' });
@@ -66,9 +66,9 @@ exports.updateReview = async (req, res) => {
 // Delete a review (by review index)
 exports.deleteReview = async (req, res) => {
   try {
-    const { _id, reviewIndex } = req.params;
+    const { id, reviewIndex } = req.params;
 
-    const business = await Business.findOne({ _id });
+    const business = await Business.findOne({_id: id });
 
     if (!business || !business.reviewData[reviewIndex]) {
       return res.status(404).json({ error: 'Review not found' });
