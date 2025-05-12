@@ -39,7 +39,17 @@ const businessSchema = new mongoose.Schema({
   reviews: { type: Number, default: 0 },
   featured: { type: Boolean, default: false },
   claimed: { type: Boolean, default: false },
-  reviewData: { type: [mongoose.Schema.Types.Mixed], default: [] }
+  reviewData: { type: [mongoose.Schema.Types.Mixed], default: [] },
+
+
+  // Claimed
+  claimedBy: {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    name: String,
+    email: String,
+    message: String,
+    claimedAt: Date
+  }
 
 }, { timestamps: true });
 

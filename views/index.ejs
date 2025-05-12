@@ -7,107 +7,15 @@
   <title>ARBI - AI Ready Business Index</title>
 </head>
 <body class="bg-white text-center">
-
-  <!-- Reviews Modal Backdrop -->
-  <div id="reviewsModalBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
-
-  <!-- Reviews Modal -->
-<div id="reviewsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-  <div class="bg-white rounded-lg w-full max-w-xl shadow-lg p-6 relative flex flex-col max-h-[80vh] overflow-hidden">
-    
-    <button id="closeReviewsModal" class="absolute top-3 right-4 text-gray-400 hover:text-black text-xl">&times;</button>
-    
-    <h2 class="text-lg font-semibold mb-4 text-center">Customer Reviews</h2>
-
-    <!-- Review List -->
-    <div id="reviewsContainer" class="flex flex-col gap-4 overflow-y-auto pr-1 mb-4 max-h-[40vh]">
-      <!-- Reviews will be injected here -->
-    </div>
-
-    <!-- New Review Form -->
-    <form id="reviewForm" class="flex flex-col gap-3 border-t pt-4">
-      <input
-        type="text"
-        id="reviewUser"
-        placeholder="Your name"
-        class="border rounded px-3 py-2 text-sm"
-        required
-      />
-
-      <textarea
-        id="reviewComment"
-        placeholder="Your review"
-        rows="3"
-        class="border rounded px-3 py-2 text-sm resize-none"
-        required
-      ></textarea>
-
-      <select
-        id="reviewRating"
-        class="border rounded px-3 py-2 text-sm"
-        required
-      >
-        <option value="">Rating</option>
-        <option value="5">5 - Excellent</option>
-        <option value="4">4 - Good</option>
-        <option value="3">3 - Okay</option>
-        <option value="2">2 - Bad</option>
-        <option value="1">1 - Terrible</option>
-      </select>
-
-      <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm">
-        Submit Review
-      </button>
-    </form>
-  </div>
-</div>
-
-  <!-- Zipcode Modal Backdrop -->
-  <div id="zipcodeModalBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
-
-  <!-- Zipcode Modal -->
-  <div id="zipcodeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg w-full max-w-sm shadow-lg p-6 relative flex flex-col">
-      <button id="closeZipcodeModal" class="absolute top-3 right-4 text-gray-400 hover:text-black text-xl">&times;</button>
-      <h2 class="text-lg font-semibold mb-4 text-center">Enter Your Zipcode</h2>
-      <form id="zipcodeForm" class="flex gap-2">
-        <input id="zipcodeInput" type="text" placeholder="e.g. 00920" class="flex-1 border rounded px-3 py-2 text-sm" required pattern="\d{5}" />
-        <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded text-sm hover:bg-yellow-600">Apply</button>
-      </form>
-    </div>
-  </div>
-
-<!-- Chat Modal -->
-<div id="chatModalBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
-
-<div id="chatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-  <div class="bg-white rounded-lg w-full max-w-md max-h-100 shadow-lg p-4 relative flex flex-col h-[80vh]">
-    
-    <!-- Close button -->
-    <button id="closeChatModal" class="absolute top-3 right-4 text-gray-400 hover:text-black text-xl">&times;</button>
-
-    <!-- Chat Header -->
-    <div id="chatHeader" class="text-lg font-semibold text-center mb-2">Chat with Business</div>
-
-    <!-- Chat Messages -->
-    <div id="chatMessages" class="flex flex-col gap-2 overflow-y-auto p-3 h-full bg-gray-50 rounded">
-      <!-- Messages will go here -->
-      <div class="text-left self-start bg-gray-200 text-gray-800 px-4 py-2 rounded-lg max-w-xs text-sm shadow">
-        Hello! Welcome to our business. How can I help you today?
-      </div>
-      
-    </div>
-
-    <!-- Input -->
-    <form id="chatForm" class="flex gap-2 mt-5">
-      <input id="chatInput" type="text" placeholder="Type a message..." class="flex-1 border rounded px-3 py-2 text-sm" required />
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Send</button>
-    </form>
-  </div>
-</div>
+  <%- include('partials/addBusinessModal') %>
+  <%- include('partials/claimBusinessModal') %>
+  <%- include('partials/authModal') %>
+  <%- include('partials/reviewModal') %>
+  <%- include('partials/zipModal') %>
+  <%- include('partials/chatModal') %>
 
 
-<main class="min-h-screen bg-white">
+  <main class="min-h-screen bg-white">
     <div>
       <header class="relative mb-12 overflow-hidden w-full">
         <div class="absolute inset-0 bg-gradient-to-r from-yellow-50 via-yellow-100 to-yellow-50 opacity-70"></div>
@@ -126,14 +34,26 @@
             </div>
       
             <!-- Right -->
-            <div class="flex items-center gap-6">
+            <div class="relative flex items-center gap-6">
               <a href="#developers" class="cursor-pointer text-sm text-gray-400 hover:text-black font-medium">Developers</a>
-              
-              <!-- Authenticated: Profile picture -->
-              <!-- <img src="/profile.jpg" alt="Profile" class="h-8 w-8 rounded-full object-cover border border-gray-300"> -->
-      
-              <!-- OR: Not authenticated: Register/Login -->
-              <a href="#register" class="cursor-pointer text-sm text-gray-400 hover:underline font-medium">Register</a>
+
+              <% if (user) { %>
+                <!-- Profile Dropdown Trigger -->
+                <div class="relative group">
+                  <img src="https://place-hold.it/64" alt="Profile"
+                      class="h-8 w-8 rounded-full object-cover border border-gray-300 cursor-pointer" />
+
+                  <!-- Dropdown Content -->
+                  <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md hidden group-hover:block z-50">
+                    <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                      Hello, <%= user.name %>
+                    </div>
+                    <a href="/api/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                  </div>
+                </div>
+              <% } else { %>
+                <a id="authModalButton" href="#" class="cursor-pointer text-sm text-gray-400 hover:underline font-medium">Register/LogIn</a>
+              <% } %>
             </div>
           </div>
         </div>
@@ -283,66 +203,11 @@
               </div>
               <div class="mt-8">
                 <h3 class="text-left font-medium text-lg mb-3">Featured Businesses</h3>
-                <div class="space-y-3">
-                  <div class="cursor-pointer border-gray-200 rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden" data-v0-t="card">
-                    <div class="p-3">
-                      <div class="flex items-center gap-3">
-                        <div class="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
-                          <img alt="Green Leaf Cafe" loading="lazy" width="48" height="48" decoding="async" data-nimg="1" class="h-full w-full object-cover" src="https://place-hold.it/128" style="color: transparent;">
-                        </div>
-                        <div>
-                          <h4 class="font-medium text-sm line-clamp-1">Green Leaf Cafe</h4>
-                          <div class="flex items-center text-yellow-500 text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-3 w-3 fill-yellow-500 mr-1">
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <span>4.5</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="cursor-pointer border-gray-200 rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden" data-v0-t="card">
-                    <div class="p-3">
-                      <div class="flex items-center gap-3">
-                        <div class="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
-                          <img alt="Bright Smile Dental" loading="lazy" width="48" height="48" decoding="async" data-nimg="1" class="h-full w-full object-cover" src="https://place-hold.it/128" style="color: transparent;">
-                        </div>
-                        <div>
-                          <h4 class="font-medium text-sm line-clamp-1">Bright Smile Dental</h4>
-                          <div class="flex items-center text-yellow-500 text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-3 w-3 fill-yellow-500 mr-1">
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <span>4.8</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="cursor-pointer border-gray-200 rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden" data-v0-t="card">
-                    <div class="p-3">
-                      <div class="flex items-center gap-3">
-                        <div class="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
-                          <img alt="Cornerstone Legal" loading="lazy" width="48" height="48" decoding="async" data-nimg="1" class="h-full w-full object-cover" src="https://place-hold.it/128" style="color: transparent;">
-                        </div>
-                        <div>
-                          <h4 class="font-medium text-sm line-clamp-1">Cornerstone Legal</h4>
-                          <div class="flex items-center text-yellow-500 text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-3 w-3 fill-yellow-500 mr-1">
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <span>4.7</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div id="featuredBusinessesContainer" class="space-y-3"></div>
               </div>
               <div class="mt-8 border-t border-gray-200 pt-4">
                 <h3 class="text-left font-medium text-sm text-gray-600 mb-2">For Business Owners</h3>
-                <button class="cursor-pointer text-sm text-gray-500 hover:text-[#4793EB] transition-colors flex items-center gap-1">
+                <button id="openCreateBusinessModalBtn" class="cursor-pointer text-sm text-gray-500 hover:text-[#4793EB] transition-colors flex items-center gap-1">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-3 w-3">
                     <path d="M5 12h14"></path>
                     <path d="M12 5v14"></path>

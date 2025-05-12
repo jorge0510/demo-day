@@ -2,6 +2,7 @@ const express = require('express')
 const upload = require("../middleware/multer");
 const businessController = require("../controllers/businesses");
 const reviewController = require('../controllers/reviews');
+const { ensureAuth } = require('../middleware/auth');
 
 const router = express.Router()
 
@@ -17,5 +18,6 @@ router.get('/', businessController.getAllBusinesses);
 router.get('/:id', businessController.getBusinessById);
 router.put('/:id', businessController.updateBusiness);
 router.delete('/:id', businessController.deleteBusiness);
+router.post('/:id/claim', ensureAuth, businessController.claimBusiness);
 
 module.exports = router

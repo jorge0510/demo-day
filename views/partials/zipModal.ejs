@@ -1,0 +1,12 @@
+<div id="zipcodeModalBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+
+<div id="zipcodeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-full max-w-sm shadow-lg p-6 relative flex flex-col">
+        <button id="closeZipcodeModal" class="absolute top-3 right-4 text-gray-400 hover:text-black text-xl">&times;</button>
+        <h2 class="text-lg font-semibold mb-4 text-center">Enter Your Zipcode</h2>
+        <form id="zipcodeForm" class="flex gap-2">
+        <input id="zipcodeInput" type="text" placeholder="e.g. 00920" class="flex-1 border rounded px-3 py-2 text-sm" required pattern="\d{5}" />
+        <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded text-sm hover:bg-yellow-600">Apply</button>
+        </form>
+    </div>
+</div>

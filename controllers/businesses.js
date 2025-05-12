@@ -86,3 +86,28 @@ exports.deleteBusiness = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.claimBusiness = async (req, res) => {
+  try {
+    const business = await Business.findById(req.params.id);
+    if (!business) return res.status(404).json({ error: 'Business not found' });
+
+    const user = req.user;
+    const message = req.body.message || '';
+
+    business.claimedBy = {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      message,
+      claimedAt: new Date()
+    };
+
+    business.claimed  = true;
+
+    await business.save();
+    res.status(200).json({ message: 'Claim submitted successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

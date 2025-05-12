@@ -1,14 +1,182 @@
 const businessContainer = document.getElementById('businessListContainer');
 const numberOfBusinessesFound = document.getElementById('numberOfBusinesses');
 
-//chat modal
-const chatModal = document.getElementById('chatModal');
-const chatBackdrop = document.getElementById('chatModalBackdrop');
-const closeChatModalBtn = document.getElementById('closeChatModal');
-const chatHeader = document.getElementById('chatHeader');
+//claim business modal
 
-let chatHistory = []; // Keep track of conversation history
-let currentBusinessName = ''; // Set this when opening the chat modal
+document.getElementById('closeClaimModalBtn').addEventListener('click', () => {
+  document.getElementById('claimBusinessModal').classList.add('hidden');
+  document.getElementById('claimModalBackdrop').classList.add('hidden');
+});
+
+document.getElementById('claimModalBackdrop').addEventListener('click', () => {
+  document.getElementById('claimBusinessModal').classList.add('hidden');
+  document.getElementById('claimModalBackdrop').classList.add('hidden');
+});
+
+const claimBusinessForm = document.getElementById('claimBusinessForm')
+if (claimBusinessForm) {
+  claimBusinessForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const businessId = document.getElementById('claimBusinessId').value;
+    const message = e.target.message.value.trim();
+
+    try {
+      const res = await fetch(`/api/businesses/${businessId}/claim`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert('Claim submitted!');
+        e.target.reset();
+        document.getElementById('claimBusinessModal').classList.add('hidden');
+        document.getElementById('claimModalBackdrop').classList.add('hidden');
+      } else {
+        alert(data.error || 'Failed to claim business.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error submitting claim.');
+    }
+  });
+}
+
+//create business modal
+// Add Business Modal Elements
+const addBusinessModal = document.getElementById('businessModal');
+const addBusinessBackdrop = document.getElementById('modalBackdrop');
+const openAddBusinessBtn = document.getElementById('openCreateBusinessModalBtn');
+const closeAddBusinessBtn = document.getElementById('closeModalBtn');
+
+// Step Navigation
+const addBusinessTabs = document.querySelectorAll('.step-tab');
+const addBusinessSteps = document.querySelectorAll('.step-content');
+const prevBusinessStepBtn = document.getElementById('prevBtn');
+const nextBusinessStepBtn = document.getElementById('nextBtn');
+let businessModalStep = 0;
+
+function showBusinessStep(index) {
+  addBusinessSteps.forEach((step, i) => step.classList.toggle('hidden', i !== index));
+  addBusinessTabs.forEach((tab, i) => {
+    tab.classList.toggle('text-gray-500', i !== index);
+    tab.classList.toggle('border-b-2', i === index);
+  });
+  prevBusinessStepBtn.classList.toggle('hidden', index === 0);
+  nextBusinessStepBtn.textContent = index === addBusinessSteps.length - 1 ? 'Submit Business' : 'Next';
+}
+
+// Modal Open/Close Handlers
+openAddBusinessBtn.addEventListener('click', () => {
+  addBusinessModal.classList.remove('hidden');
+  addBusinessBackdrop.classList.remove('hidden');
+  businessModalStep = 0;
+  showBusinessStep(businessModalStep);
+});
+
+closeAddBusinessBtn.addEventListener('click', () => {
+  addBusinessModal.classList.add('hidden');
+  addBusinessBackdrop.classList.add('hidden');
+});
+
+addBusinessBackdrop.addEventListener('click', () => {
+  addBusinessModal.classList.add('hidden');
+  addBusinessBackdrop.classList.add('hidden');
+});
+
+// Step tab click
+addBusinessTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    businessModalStep = parseInt(tab.dataset.step);
+    showBusinessStep(businessModalStep);
+  });
+});
+
+// Navigation button logic
+nextBusinessStepBtn.addEventListener('click', () => {
+  if (businessModalStep === addBusinessSteps.length - 1) {
+    const form = document.getElementById('businessForm');
+    const formData = new FormData(form);
+
+    fetch('/api/businesses', {
+      method: 'POST',
+      body: formData
+    }).then(async res => {
+      const result = await res.json();
+      if (res.ok) {
+        alert('Business submitted!');
+        form.reset();
+        addBusinessModal.classList.add('hidden');
+        addBusinessBackdrop.classList.add('hidden');
+      } else {
+        alert('Error: ' + result.error);
+      }
+    }).catch(err => {
+      console.error('Network error:', err);
+      alert('Submission failed');
+    });
+  } else {
+    businessModalStep++;
+    showBusinessStep(businessModalStep);
+  }
+});
+
+prevBusinessStepBtn.addEventListener('click', () => {
+  if (businessModalStep > 0) {
+    businessModalStep--;
+    showBusinessStep(businessModalStep);
+  }
+});
+
+
+//auth modal
+const authModal = document.getElementById('authModal');
+const authBackdrop = document.getElementById('authBackdrop');
+const closeAuthModal = document.getElementById('closeAuthModal');
+const loginTab = document.getElementById('loginTab');
+const registerTab = document.getElementById('registerTab');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const authModalButton = document.getElementById('authModalButton');
+if(authModalButton) {authModalButton.addEventListener('click', openAuthModal)}
+
+// Show modal
+function openAuthModal(e) {
+  e.preventDefault()
+  authModal.classList.remove('hidden');
+  authBackdrop.classList.remove('hidden');
+  loginTab.click(); // default to login
+}
+
+// Close modal
+closeAuthModal.onclick = () => {
+  authModal.classList.add('hidden');
+  authBackdrop.classList.add('hidden');
+};
+
+// Toggle tabs
+loginTab.onclick = () => {
+  loginTab.classList.add('text-black', 'border-black');
+  loginTab.classList.remove('text-gray-500', 'border-transparent');
+
+  registerTab.classList.remove('text-black', 'border-black');
+  registerTab.classList.add('text-gray-500', 'border-transparent');
+
+  loginForm.classList.remove('hidden');
+  registerForm.classList.add('hidden');
+};
+
+registerTab.onclick = () => {
+  registerTab.classList.add('text-black', 'border-black');
+  registerTab.classList.remove('text-gray-500', 'border-transparent');
+
+  loginTab.classList.remove('text-black', 'border-black');
+  loginTab.classList.add('text-gray-500', 'border-transparent');
+
+  registerForm.classList.remove('hidden');
+  loginForm.classList.add('hidden');
+};
 
 //review modal
 const reviewsModal = document.getElementById('reviewsModal');
@@ -28,21 +196,44 @@ closeReviewsBtn.addEventListener('click', () => toggleReviewsModal(false));
 reviewsBackdrop.addEventListener('click', () => toggleReviewsModal(false));
 
 
+//chat modal
+const chatModal = document.getElementById('chatModal');
+const chatBackdrop = document.getElementById('chatModalBackdrop');
+const closeChatModalBtn = document.getElementById('closeChatModal');
+const chatHeader = document.getElementById('chatHeader');
+
+let chatHistory = []; // Keep track of conversation history
+let currentBusinessName = ''; // Set this when opening the chat modal
+
+
 // on chat button clicked - chat modal open
 businessContainer.addEventListener('click', async (event) => {
     const chatButton = event.target.closest('.chatNowBusinessButton');
     const reviewsBusinessButton = event.target.closest('.reviewsBusinessButton');
+    const claimBtn = event.target.closest('.claimBusinessButton');
+    const chatMessages = document.getElementById('chatMessages')
 
     if (chatButton) {
         const businessName = chatButton.closest('[data-business-name]')?.dataset?.businessName || 'the business';
-        
+
         if (currentBusinessName !== businessName) {
-            chatHistory = []
+          chatHistory = []; // Reset history if different business
         }
+        
+        // Reset chat UI
+
+        if (chatMessages){
+          chatMessages.innerHTML = `
+            <div class="text-left self-start bg-gray-200 text-gray-800 px-4 py-2 rounded-lg max-w-xs text-sm shadow">
+              Hello! Welcome to ${businessName}. How can I help you today?
+            </div>
+          `;
+        }
+
         currentBusinessName = businessName
-        chatHeader.innerText = `Chat with ${businessName}`;
-        chatModal.classList.remove('hidden');
-        chatBackdrop.classList.remove('hidden');
+        chatHeader && (chatHeader.innerText = `Chat with ${businessName}`);
+        chatModal && chatModal.classList.remove('hidden');
+        chatBackdrop && chatBackdrop.classList.remove('hidden');
 
         // ✅ Focus the input after a short delay to ensure the modal is visible
         setTimeout(() => {
@@ -72,14 +263,25 @@ businessContainer.addEventListener('click', async (event) => {
       } catch (err) {
         console.error('Failed to fetch reviews:', err);
       }
+    } else if (claimBtn) {
+      const bizId = claimBtn.dataset.id;
+      const bizIdInput = document.getElementById('claimBusinessId');
+      if (bizIdInput) {
+        bizIdInput.value = bizId;
+      }
+      document.getElementById('claimBusinessModal').classList.remove('hidden');
+      document.getElementById('claimModalBackdrop').classList.remove('hidden');
     }
 });
 
 // close chat modal
-closeChatModalBtn.addEventListener('click', () => {
+if(closeChatModalBtn) {
+  closeChatModalBtn.addEventListener('click', () => {
     chatModal.classList.add('hidden');
     chatBackdrop.classList.add('hidden');
-});
+  });
+}
+
 
 // on chat send message
 function addChatBubble(role, text) {
@@ -97,54 +299,58 @@ function addChatBubble(role, text) {
     chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
 }
 
-document.getElementById('chatForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+const chatForm = document.getElementById('chatForm')
 
-  const input = document.getElementById('chatInput');
-  const message = input.value.trim();
-  if (!message) return;
+if(chatForm) {
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  // 1. Add user message to UI and history
-  addChatBubble('user', message);
-  chatHistory.push({ role: 'user', text: message });
-  input.value = '';
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
 
-  // 2. Add typing indicator
-  const chatMessages = document.getElementById('chatMessages');
-  const typingBubble = document.createElement('div');
-  typingBubble.className = 'self-start bg-gray-200 text-gray-500 px-4 py-2 rounded-lg max-w-xs text-sm italic shadow';
-  typingBubble.innerText = 'Typing...';
-  chatMessages.appendChild(typingBubble);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+    // 1. Add user message to UI and history
+    addChatBubble('user', message);
+    chatHistory.push({ role: 'user', text: message });
+    input.value = '';
 
-  try {
-    // 3. Send to backend
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        businessName: currentBusinessName,
-        message,
-        history: chatHistory
-      })
-    });
+    // 2. Add typing indicator
+    const chatMessages = document.getElementById('chatMessages');
+    const typingBubble = document.createElement('div');
+    typingBubble.className = 'self-start bg-gray-200 text-gray-500 px-4 py-2 rounded-lg max-w-xs text-sm italic shadow';
+    typingBubble.innerText = 'Typing...';
+    chatMessages.appendChild(typingBubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    const data = await res.json();
-    chatMessages.removeChild(typingBubble);
+    try {
+      // 3. Send to backend
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: currentBusinessName,
+          message,
+          history: chatHistory
+        })
+      });
 
-    if (!res.ok || !data.reply) {
-      addChatBubble('ai', 'Sorry, something went wrong. Please try again.');
-    } else {
-      addChatBubble('ai', data.reply);
-      chatHistory.push({ role: 'ai', text: data.reply });
+      const data = await res.json();
+      chatMessages.removeChild(typingBubble);
+
+      if (!res.ok || !data.reply) {
+        addChatBubble('ai', 'Sorry, something went wrong. Please try again.');
+      } else {
+        addChatBubble('ai', data.reply);
+        chatHistory.push({ role: 'ai', text: data.reply });
+      }
+
+    } catch (err) {
+      chatMessages.removeChild(typingBubble);
+      addChatBubble('ai', 'Network error. Please try again later.');
+      console.error('Chat error:', err);
     }
-
-  } catch (err) {
-    chatMessages.removeChild(typingBubble);
-    addChatBubble('ai', 'Network error. Please try again later.');
-    console.error('Chat error:', err);
-  }
-});
+  });
+}
 
 //review form
 const reviewForm = document.getElementById('reviewForm');
@@ -269,27 +475,32 @@ searchForm.addEventListener('submit', async (e) => {
 });
 
   
-
+const displayRating = (reviewData) => reviewData.rating ? (reviewData.reduce( (a, c) => a = c.rating)/reviewData.length).toFixed(1) : 5;
 const renderBusinesses = (businessList) => {
   numberOfBusinessesFound.innerText = businessList.length || 0;
   businessContainer.innerHTML = '';
 
   businessList.forEach(business => {
     const {
+      _id,
       name,
       category,
       city,
+      state,
+      zipCode,
       description,
       image,
       featured,
+      claimed,
       reviewData,
+      website,
       address,
       phone,
       amenities = []
     } = business;
 
     const imageUrl = image || 'https://place-hold.it/128';
-    const displayRating = reviewData.rating ? (reviewData.reduce( (a, c) => a = c.rating)/reviewData.length).toFixed(1) : 5;
+    
     const reviewCount = reviewData.length || 0;
 
     const featuredBadge = featured
@@ -302,6 +513,12 @@ const renderBusinesses = (businessList) => {
       </div>
     `).join('');
 
+    function formatPhoneUS(phone) {
+      const digits = phone.replace(/\D/g, ''); // Remove non-digits
+      if (digits.length !== 10) return phone;
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
     businessContainer.innerHTML += `
       <div data-business-name="${business.name}" class="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 border-transparent hover:border-yellow-200">
         <div class="p-0">
@@ -312,7 +529,7 @@ const renderBusinesses = (businessList) => {
               <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:hidden">
                 <div class="flex items-center text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <span class="font-medium">${ displayRating }</span>
+                  <span class="font-medium">${ displayRating(reviewData) }</span>
                   <span class="text-white/80 text-xs ml-1">(${reviewCount})</span>
                 </div>
               </div>
@@ -327,6 +544,14 @@ const renderBusinesses = (businessList) => {
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-yellow-500 text-yellow-500 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Featured
                       </div>` : ''
                     }
+                    ${claimed ? `
+                    <div class="items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ml-2 hidden sm:inline-flex border-green-200 text-green-700 bg-green-50">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-green-500 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 13l4 4L19 7"/>
+                      </svg>
+                      Claimed
+                    </div>` : ''
+                    }
                   </div>
                   <div class="flex items-center flex-wrap gap-2 mt-2">
                     <div class="rounded-full border px-2.5 py-0.5 text-xs font-semibold flex items-center gap-1 bg-gray-100 text-secondary-foreground border-gray-100">
@@ -339,7 +564,7 @@ const renderBusinesses = (businessList) => {
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-yellow-500 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                       </svg>
-                      <span class="font-medium">${displayRating}</span>
+                      <span class="font-medium">${displayRating(reviewData)}</span>
                       <span class="text-muted-foreground text-sm ml-1">(${reviewCount} reviews)</span>
                     </div>
                   </div>
@@ -358,12 +583,29 @@ const renderBusinesses = (businessList) => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 mr-2 text-gray-400">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
-              </svg>${address || 'Address not available'}, ${city}
+              </svg>${address || 'Address not available'}, ${city || ""}, ${state || ""}. ${zipCode}
                 </div>
-                <div class="flex items-center text-muted-foreground">
+                <div class="cursor-pointer flex items-center text-muted-foreground">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4 mr-2 text-gray-400">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                    </svg>${phone || 'N/A'}
+                    </svg> <a href="tel://${phone}">${formatPhoneUS(phone) || 'N/A'}</a>
+                </div>
+                <div class="cursor-pointer flex items-center text-muted-foreground">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                      width="24" height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-globe h-4 w-4 mr-2 text-gray-400">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M2 12h20"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 0 20"></path>
+                    <path d="M12 2a15.3 15.3 0 0 0 0 20"></path>
+                  </svg>
+                  <a href="https://${website}" target="_blank" class="hover:underline">${website || 'Website'}</a>
                 </div>
                 <div class="flex items-center text-muted-foreground ml-auto">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -376,17 +618,17 @@ const renderBusinesses = (businessList) => {
               <div class="mt-4 pt-2 flex justify-between items-center">
                 <div class="flex gap-2">${amenitiesHtml}</div>
                 <div class="flex items-center gap-2">
-                  <button class="text-xs border border-dashed border-gray-300 rounded-md px-3 py-1 text-gray-500 hover:text-gray-700 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path d="M20 6L9 17l-5-5"/>
-                    </svg>Claim Business
-                  </button>
-                  <button class="text-xs hover:bg-accent rounded-md px-3 py-1 text-gray-500 hover:text-gray-700 flex items-center gap-1">
-                    View Details
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    </svg>
-                  </button>
+
+                 ${ !claimed ? `
+                    <button data-id="${_id}" class="claimBusinessButton cursor-pointer text-xs border border-dashed border-gray-300 rounded-md px-3 py-1 text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>Claim Business
+                    </button> 
+                 ` : ''
+                  }
+                  
+                  
                 </div>
               </div>
             </div>
@@ -417,6 +659,38 @@ const renderBusinesses = (businessList) => {
   // `
 };
 
+//featured businesses
+function renderFeaturedBusinesses(featuredList = []) {
+  const container = document.getElementById('featuredBusinessesContainer');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  featuredList.forEach(biz => {
+    const div = document.createElement('div');
+    div.className = 'cursor-pointer border-gray-200 rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden';
+    div.innerHTML = `
+      <div class="p-3">
+        <div class="flex items-center gap-3">
+          <div class="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
+            <img alt="${biz.name}" class="h-full w-full object-cover" src="${biz.image || 'https://place-hold.it/128'}" />
+          </div>
+          <div>
+            <h4 class="font-medium text-sm line-clamp-1">${biz.name}</h4>
+            <div class="flex items-center text-yellow-500 text-xs">
+              <svg class="h-3 w-3 fill-yellow-500 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <span>${ displayRating(biz.reviewData) || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
 
 async function fetchBusinesses({ category = '', zipcode = '', search = '', page = 1, limit = 10 } = {}) {
   const queryParams = new URLSearchParams();
@@ -446,6 +720,10 @@ async function fetchBusinesses({ category = '', zipcode = '', search = '', page 
 
 const businesses = await fetchBusinesses()
 renderBusinesses(businesses)
+
+// filter and render featured ones
+const featured = businesses.filter(b => b.featured);
+renderFeaturedBusinesses(featured);
 
 
 

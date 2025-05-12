@@ -1,0 +1,33 @@
+<!-- Claim Modal Backdrop -->
+<div id="claimModalBackdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+
+<!-- Claim Business Modal -->
+<div id="claimBusinessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg w-full max-w-lg shadow-lg p-6 relative text-left text-gray-700 border border-gray-200">
+
+    <!-- Close Button -->
+    <button id="closeClaimModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-black text-xl">&times;</button>
+
+    <% if (!user) { %>
+      <h2 class="text-xl font-semibold mb-2">You must have an account</h2>
+      <p class="text-sm text-gray-700">Please <a href="#" class="text-blue-600 underline hover:text-blue-800" id="authModalButtonFromClaim">register or log in</a> to claim this business.</p>
+    <% } else { %>
+      <h2 class="text-xl font-semibold mb-1">Claim This Business</h2>
+      <p class="text-sm mb-4 text-gray-700">We’ll link this business to your account and contact you if verification is needed.</p>
+
+      <form id="claimBusinessForm" class="space-y-4">
+        <input type="hidden" name="businessId" id="claimBusinessId">
+        
+        <div>
+          <label class="block font-medium mb-1">Message (optional)</label>
+          <textarea name="message" rows="3" class="w-full border border-gray-200 rounded px-3 py-2 text-gray-700"></textarea>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="submit" class="px-5 py-2 bg-black text-white rounded hover:bg-gray-800 text-sm">Submit Claim</button>
+        </div>
+      </form>
+    <% } %>
+
+  </div>
+</div>

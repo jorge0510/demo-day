@@ -1,0 +1,30 @@
+
+<div id="authBackdrop" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+
+
+<div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg w-full max-w-md shadow-lg p-6 relative">
+    <button id="closeAuthModal" class="absolute top-3 right-4 text-gray-400 hover:text-black text-xl">&times;</button>
+
+    
+    <div class="flex justify-around mb-4 border-b border-gray-200">
+      <button id="loginTab" class="cursor-pointer authTab px-4 py-2 text-sm font-medium text-black border-b-2 border-black">Login</button>
+      <button id="registerTab" class="cursor-pointer authTab px-4 py-2 text-sm font-medium text-gray-500 border-b-2 border-transparent">Register</button>
+    </div>
+
+    
+    <form id="loginForm" class="authForm space-y-4" action="/api/auth/login" method="POST">
+      <input type="email" name="email" placeholder="Email" class="w-full border rounded px-3 py-2" required />
+      <input type="password" name="password" placeholder="Password" class="w-full border rounded px-3 py-2" required />
+      <button type="submit" class="w-full bg-black text-white py-2 rounded">Login</button>
+    </form>
+
+    
+    <form id="registerForm" class="authForm hidden space-y-4" action="/api/auth/register" method="POST">
+      <input type="text" name="name" placeholder="Full Name" class="w-full border rounded px-3 py-2" required />
+      <input type="email" name="email" placeholder="Email" class="w-full border rounded px-3 py-2" required />
+      <input type="password" name="password" placeholder="Password" class="w-full border rounded px-3 py-2" required />
+      <button type="submit" class="w-full bg-black text-white py-2 rounded">Register</button>
+    </form>
+  </div>
+</div>
