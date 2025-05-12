@@ -1,4 +1,5 @@
 const express = require('express')
+const upload = require("../middleware/multer");
 const businessController = require("../controllers/businesses");
 const reviewController = require('../controllers/reviews');
 
@@ -11,7 +12,7 @@ router.put('/:id/reviews/:reviewIndex', reviewController.updateReview);
 router.delete('/:id/reviews/:reviewIndex', reviewController.deleteReview);
 
 // Businesses CRUD
-router.post('/', businessController.createBusiness);
+router.post('/', upload.single("image"), businessController.createBusiness);
 router.get('/', businessController.getAllBusinesses);
 router.get('/:id', businessController.getBusinessById);
 router.put('/:id', businessController.updateBusiness);

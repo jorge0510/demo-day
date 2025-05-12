@@ -1,9 +1,13 @@
+const cloudinary = require("../middleware/cloudinary");
 const Business = require('../models/Business');
 
 // Create a new business
 exports.createBusiness = async (req, res) => {
   try {
-    const business = new Business(req.body);
+    // Upload image to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    const business = new Business({...req.body, image: result.secure_url});
     const savedBusiness = await business.save();
     res.status(201).json(savedBusiness);
   } catch (error) {

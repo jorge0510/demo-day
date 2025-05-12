@@ -37,18 +37,14 @@
       </div>
 
       <!-- Step Content -->
-      <form id="businessForm" class="space-y-4">
+      <form id="businessForm" class="space-y-4" enctype="multipart/form-data">
         <!-- Step 1 -->
         <div class="step-content" data-step="0">
           <label class="block font-medium">Business Name</label>
           <input type="text" name="name" class="w-full border rounded px-3 py-2" required>
 
           <label class="block font-medium mb-1">Category</label>
-          <select
-            name="category"
-            required
-            class="shadow-none bg-white border-gray-200 w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
-            >
+          <select name="category" required class="shadow-none bg-white border-gray-200 w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black">
             <option value="" disabled selected>Select a category</option>
             <option value="Restaurants">Restaurants</option>
             <option value="Technology">Technology</option>
@@ -57,8 +53,7 @@
             <option value="Professional Services">Professional Services</option>
             <option value="Retail">Retail</option>
             <option value="Automotive">Automotive</option>
-           </select>
-
+          </select>
 
           <label class="block font-medium">Address</label>
           <input type="text" name="address" class="w-full border rounded px-3 py-2" required>
@@ -105,8 +100,8 @@
             <label><input type="checkbox" name="amenities" value="Outdoor Seating" /> Outdoor Seating</label>
           </div>
 
-          <label class="block font-medium mt-4">Business Photo URL</label>
-          <input type="text" name="image" class="w-full border rounded px-3 py-2" />
+          <label class="block font-medium mt-4">Business Photo</label>
+          <input type="file" name="image" accept="image/*" class="w-full border rounded px-3 py-2" />
         </div>
 
         <!-- Step 3 -->
@@ -178,28 +173,12 @@
 
     nextBtn.onclick = () => {
       if (currentStep === steps.length - 1) {
-        // Submit form
         const form = document.getElementById('businessForm');
         const formData = new FormData(form);
-        const data = {};
-
-        for (const [key, value] of formData.entries()) {
-          if (key.includes('.')) {
-            const [outer, inner] = key.split('.');
-            data[outer] = data[outer] || {};
-            data[outer][inner] = value;
-          } else if (key === 'amenities') {
-            data[key] = data[key] || [];
-            data[key].push(value);
-          } else {
-            data[key] = value;
-          }
-        }
 
         fetch('http://localhost:3000/api/businesses', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: formData // Let the browser set Content-Type with boundary
         }).then(async res => {
           const result = await res.json();
           if (res.ok) {
