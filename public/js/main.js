@@ -1,8 +1,15 @@
 const businessContainer = document.getElementById('businessListContainer');
 const numberOfBusinessesFound = document.getElementById('numberOfBusinesses');
 
-//claim business modal
+// navbar responsiveness on mobile
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
 
+mobileMenuButton.addEventListener('click', () => {
+  mobileMenu.classList.toggle('hidden');
+});
+
+//claim business modal
 document.getElementById('closeClaimModalBtn').addEventListener('click', () => {
   document.getElementById('claimBusinessModal').classList.add('hidden');
   document.getElementById('claimModalBackdrop').classList.add('hidden');
@@ -139,11 +146,19 @@ const registerTab = document.getElementById('registerTab');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const authModalButton = document.getElementById('authModalButton');
+
 if(authModalButton) {authModalButton.addEventListener('click', openAuthModal)}
+
+const params = new URLSearchParams(window.location.search);
+if (params.get('auth') === 'open') {
+  document.addEventListener("DOMContentLoaded", function () {
+    openAuthModal(); 
+  });
+}
 
 // Show modal
 function openAuthModal(e) {
-  e.preventDefault()
+  e && e.preventDefault()
   authModal.classList.remove('hidden');
   authBackdrop.classList.remove('hidden');
   loginTab.click(); // default to login

@@ -26,34 +26,56 @@
         </div>
         <div class="relative max-w-7xl mx-auto px-4 py-12 md:py-16">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between items-center h-16">
-            <!-- Left -->
-            <div class="flex items-center gap-6">
-              <a href="/about" class="cursor-pointer text-sm text-gray-400 hover:text-black font-medium">About</a>
-              <a href="/featureRequests" class="cursor-pointer text-sm text-gray-400 hover:text-black font-medium">Feature Request</a>
-            </div>
-      
-            <!-- Right -->
-            <div class="relative flex items-center gap-6">
-              <a href="/developers" class="cursor-pointer text-sm text-gray-400 hover:text-black font-medium">Developers</a>
+          <!-- NAVBAR -->
+            <nav class="flex items-center justify-between h-16 relative">
+              <!-- Logo or left links -->
+              <div class="flex items-center gap-6">
+                <a href="/about" class="hidden md:inline cursor-pointer text-sm text-gray-400 hover:text-black font-medium">About</a>
+                <a href="/featureRequests" class="hidden md:inline cursor-pointer text-sm text-gray-400 hover:text-black font-medium">Feature Request</a>
+              </div>
 
+              <!-- Mobile Menu Toggle -->
+              <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Right Links -->
+              <div class="hidden md:flex items-center gap-6">
+                <a href="/developers" class="text-sm text-gray-400 hover:text-black font-medium">Developers</a>
+
+                <% if (user) { %>
+                  <div class="relative group text-sm text-gray-400 cursor-pointer">
+                    <div class="hover:underline">Welcome, <%= user.name %></div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md hidden group-hover:block z-50">
+                      <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                      <a href="/api/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                    </div>
+                  </div>
+                <% } else { %>
+                  <a id="authModalButton" href="#" class="text-sm text-gray-400 hover:underline font-medium">Register/LogIn</a>
+                <% } %>
+              </div>
+            </nav>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden flex-col gap-4 mt-4">
+              <a href="/about" class="block text-sm text-gray-500 hover:text-black">About</a>
+              <a href="/featureRequests" class="block text-sm text-gray-500 hover:text-black">Feature Request</a>
+              <a href="/developers" class="block text-sm text-gray-500 hover:text-black">Developers</a>
               <% if (user) { %>
-                <!-- Profile Dropdown Trigger -->
-                <div class="relative group text-sm text-gray-400 cursor-pointer">
-                  <div class="hover:underline">
-                    Welcome, <%= user.name %>
-                  </div>
-              
-                  <!-- Dropdown Content -->
-                  <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md hidden group-hover:block z-50">
-                    <a href="/api/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
-                  </div>
-                </div>
+                <a href="/dashboard" class="block text-sm text-gray-500 hover:text-black">Dashboard</a>
+                <a href="/api/auth/logout" class="block text-sm text-gray-500 hover:text-black">Logout</a>
               <% } else { %>
-                <a id="authModalButton" href="#" class="cursor-pointer text-sm text-gray-400 hover:underline font-medium">Register/LogIn</a>
+                <a id="authModalButtonMobile" href="#" class="block text-sm text-gray-500 hover:underline">Register/LogIn</a>
               <% } %>
             </div>
-          </div>
         </div>
           <div class="flex flex-col items-center text-center mb-8">
             <!-- <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-4 shadow-lg">
