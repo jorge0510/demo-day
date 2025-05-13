@@ -33,20 +33,41 @@ Vozmia bridges the gap between automation and authenticity. We believe that the 
 
 ---
 
+### 🧠 How it Works
+- The AI doesn't assume—it **asks**.
+- Business owners train their assistant by answering questions like:  
+  _“Do you offer gluten-free options?”_
+- The AI learns from every reply and stores those answers for future conversations.
+- Customers benefit from instant, accurate, and trustworthy info—on demand.
+
+---
+
+## 🧩 Features
+
+- 🔍 **Minimalistic Search Experience**
+- 🧠 **Conversational AI with business-taught knowledge**
+- 🗂️ **Categorized, Filterable Directory**
+- 📦 **Multitenancy-ready for multiple businesses**
+- 📸 **Image upload with Cloudinary**
+- 🧾 **Feature request and feedback system**
+- 🛡️ **Authentication & Authorization**
+
+---
+
 ## 📁 Project Structure
 
 ```
-├── config/            # Configuration files
-├── controllers/       # Route logic (likely handles business logic)
-├── middleware/        # Auth or other middleware
-├── models/            # Mongoose or DB models
-├── node_modules/      
-├── public/            # Static assets (CSS, JS, images)
-├── routes/            # Express route definitions
-├── src/               # Likely extra logic / helpers / client-side JS
-├── views/             # EJS templates (where index.ejs probably lives)
-├── index.js           # Main Express app entry
-
+├── config/           # DB + Passport config
+├── controllers/      # Business, Chat, Auth, FAQs, Reviews logic
+├── middleware/       # Auth, Cloudinary, Multer
+├── models/           # Business, User, FAQ schemas
+├── public/           # Static assets
+├── routes/           # Express routes
+├── src/              # Styles and client logic
+├── views/            # EJS views and partials
+├── index.js          # App entry point
+├── Dockerfile        # Deployment setup
+└── README.md         # You’re here
 ```
 
 ---
@@ -69,15 +90,20 @@ npm install
 ### 3. Create a `.env` file
 
 ```env
-MONGODB_URI=your_mongo_connection
-SESSION_SECRET=your_secret
-OPENAI_API_KEY=your_openai_key
+PORT=3000
+DB_STRING=your_mongo_connection_string
+GEMINI_API_KEY=your_google_gemini_key
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
 ```
 
 ### 4. Start the server
 
 ```bash
 npm run dev
+# or
+node index.js
 ```
 
 Visit [http://localhost:3000](http://localhost:3000)
