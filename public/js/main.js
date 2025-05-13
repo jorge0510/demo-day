@@ -514,7 +514,7 @@ const renderBusinesses = (businessList) => {
       amenities = []
     } = business;
 
-    const imageUrl = image || 'https://place-hold.it/128';
+    const imageUrl = image || '/img/logo.jpg';
     
     const reviewCount = reviewData.length || 0;
 
@@ -688,7 +688,7 @@ function renderFeaturedBusinesses(featuredList = []) {
       <div class="p-3">
         <div class="flex items-center gap-3">
           <div class="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
-            <img alt="${biz.name}" class="h-full w-full object-cover" src="${biz.image || 'https://place-hold.it/128'}" />
+            <img alt="${biz.name}" class="h-full w-full object-cover" src="${biz.image || '/img/logo.jpg'}" />
           </div>
           <div>
             <h4 class="font-medium text-sm line-clamp-1">${biz.name}</h4>
