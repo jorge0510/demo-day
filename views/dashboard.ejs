@@ -38,8 +38,15 @@
       <% if (selectedBusiness) { %>
         <div class="mb-10 border-b border-gray-300 pb-6">
           <h2 class="text-xl font-semibold text-gray-800 mb-1">Business: <%= selectedBusiness.name %></h2>
-          <p class="text-sm text-gray-500 mb-4">Claimed by: <%= selectedBusiness.claimedBy?.email || 'Unclaimed' %></p>
+          <p class="text-sm text-gray-500">Claimed by: <%= selectedBusiness.claimedBy?.email || 'Unclaimed' %></p>
 
+          <% if (!selectedBusiness.featured) { %>
+            <form action="/api/businesses/<%= selectedBusiness._id %>/feature" method="POST" class="inline-block mt-1 mb-5">
+              <button type="submit" class="text-xs text-blue-500 hover:underline" onclick="return confirm('Are you sure you want to feature <%= selectedBusiness.name %>?');">
+                Feature <%= selectedBusiness.name %>
+              </button>
+            </form>
+          <% } %>
           <div class="space-y-6">
             <% selectedBusiness.faqs.forEach(faq => { %>
               <div class="border border-gray-200 p-4 rounded">

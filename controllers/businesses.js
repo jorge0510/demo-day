@@ -116,3 +116,17 @@ exports.claimBusiness = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.featureBusiness = async (req, res) => {
+  try {
+    const business = await Business.findById(req.params.id);
+    if (!business) return res.status(404).json({ error: 'Business not found' });
+
+    business.featured = true
+
+    await business.save();
+    res.status(200).json({ message: 'Featured submitted successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

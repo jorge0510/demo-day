@@ -20,6 +20,7 @@ router.get('/:id', businessController.getBusinessById);
 router.put('/:id', businessController.updateBusiness);
 router.delete('/:id', businessController.deleteBusiness);
 router.post('/:id/claim', ensureAuth, businessController.claimBusiness);
+router.post('/:id/feature', ensureAuth, businessController.featureBusiness);
 
 // FAQs for a business (only accessible by claimed owner)
 router.get('/:id/faqs', ensureAuth, faqController.listFaqs);
