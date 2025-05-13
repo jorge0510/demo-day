@@ -1,6 +1,13 @@
 const businessContainer = document.getElementById('businessListContainer');
 const numberOfBusinessesFound = document.getElementById('numberOfBusinesses');
 
+function truncateText(text, maxLength) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substring(0, maxLength) + "...";
+}
+
 // navbar responsiveness on mobile
 const mobileMenuButton = document.getElementById('mobile-menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -599,7 +606,7 @@ const renderBusinesses = (businessList) => {
                   Chat Now
                 </button>
               </div>
-              <p class="text-left text-sm mt-3 text-gray-600">${description || 'No description provided.'}</p>
+              <p class="text-left text-sm mt-3 text-gray-600">${truncateText(description, 499) || 'No description provided.'}</p>
               <div class="bg-gray-300 h-[1px] w-full my-4"></div>
               <div class="flex flex-col sm:flex-row gap-4 text-sm">
                 <div class="flex items-center text-muted-foreground">
