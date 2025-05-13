@@ -5,9 +5,14 @@ const Business = require('../models/Business');
 exports.createBusiness = async (req, res) => {
   try {
     // Upload image to cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
+    let imageUrl = '';
 
-    const business = new Business({...req.body, image: result.secure_url});
+    if (req.file && req.file.path) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+    }
+
+    const business = new Business({...req.body, image: imageUrl});
     const savedBusiness = await business.save();
     res.status(201).json(savedBusiness);
   } catch (error) {
