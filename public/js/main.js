@@ -489,8 +489,16 @@ searchForm.addEventListener('submit', async (e) => {
   }
 });
 
-  
-const displayRating = (reviewData) => reviewData.rating ? (reviewData.reduce( (a, c) => a = c.rating)/reviewData.length).toFixed(1) : 5;
+const addPointZero = number =>
+  Number.isInteger(number) ? number.toString() + ".0" : number.toFixed(1);
+
+const displayRating = (reviewData) =>
+  reviewData.length
+    ? addPointZero(
+        reviewData.reduce((a, c) => a + c.rating, 0) / reviewData.length
+      )
+    : "5.0";
+
 const renderBusinesses = (businessList) => {
   numberOfBusinessesFound.innerText = businessList.length || 0;
   businessContainer.innerHTML = '';
