@@ -18,6 +18,8 @@ const apiRouter = require('./routes/api')
 const apiChatRouter = require('./routes/chat')
 const authRoutes = require('./routes/auth');
 
+const { ensureAuth } = require('./middleware/auth');
+
 //Use .env file in config folder
 require("dotenv").config({ path: "./config/.env" });
 
@@ -69,6 +71,28 @@ app.use('/api/auth', authRoutes);
 app.get('/', (req, res) => {
   res.render('index', { user: req.user || null, messages: req.flash() });
 });
+
+app.get('/dashboard', ensureAuth, async (req, res) => {
+  try {
+    const Business = require('./models/Business');
+    const Faq = require('./models/FAQ');
+
+    const business = await Business.findOne({ 'claimedBy.userId': req.user._id });
+    const faqs = business
+      ? await Faq.find({ business: business._id }).sort({ createdAt: -1 })
+      : [];
+
+    res.render('dashboard', {
+      user: req.user,
+      business,
+      faqs
+    });
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    res.status(500).render('error/500');
+  }
+});
+
 
 app.get('/about', (req, res) => {
   res.render('about', { user: req.user });
