@@ -24,6 +24,7 @@ router.post('/:id/claim', ensureAuth, businessController.claimBusiness);
 // FAQs for a business (only accessible by claimed owner)
 router.get('/:id/faqs', ensureAuth, faqController.listFaqs);
 router.post('/:id/faqs/:faqId/reply', ensureAuth, faqController.replyToFaq);
+router.post('/:id/faqs/:faqId/hide', ensureAuth, faqController.hideFaq);
 
 
 module.exports = router

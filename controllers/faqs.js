@@ -1,7 +1,6 @@
 const FAQ = require('../models/FAQ');
 const Business = require('../models/Business');
 
-// GET /api/businesses/:businessId/faqs
 exports.listFaqs = async (req, res) => {
   try {
     const businessId = req.params.businessId;
@@ -30,7 +29,6 @@ exports.listFaqs = async (req, res) => {
   }
 };
 
-// POST /api/businesses/:businessId/faqs/:faqId/reply
 exports.replyToFaq = async (req, res) => {
   try {
     const { id, faqId } = req.params;
@@ -64,5 +62,25 @@ exports.replyToFaq = async (req, res) => {
   } catch (err) {
     console.error('FAQ reply error:', err);
     res.status(500).send('Server error.');
+  }
+};
+
+exports.hideFaq = async (req, res) => {
+  try {
+    const faq = await FAQ.findById(req.params.faqId).populate('business');
+    if (!faq) return res.status(404).send('FAQ not found');
+
+    // Make sure current user owns the business
+    if (faq.business.claimedBy?.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).send('Unauthorized');
+    }
+
+    faq.hidden = true;
+    await faq.save();
+
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
   }
 };

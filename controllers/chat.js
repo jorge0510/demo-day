@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const Business = require('../models/Business'); // Optional if using business info
+const Business = require('../models/Business'); 
 const FAQ = require('../models/FAQ');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -17,7 +17,7 @@ exports.chatWithBusiness = async (req, res) => {
       return res.status(404).json({ error: 'Business not found' });
     }
 
-    const faqs = await FAQ.find({ business: business._id, approved: true });
+    const faqs = await FAQ.find({ business: business._id, approved: true, hidden: false });
 
     const faqInstructions = faqs.length ? `Frequently Asked Questions:\n` + faqs.map(faq => `- Q: ${faq.question}\n  A: ${faq.reply}`).join('\n') : '';
 
@@ -80,24 +80,27 @@ exports.chatWithBusiness = async (req, res) => {
 
     const reply = result?.response?.text().trim();
 
-    // Detect if the response seems uncertain or vague
     const hallucinationIndicators = [
       "I'm not sure",
       "As an AI",
+      "I don't have information",
       "I don't have that information",
       "I can't provide",
       "Unfortunately",
       "I cannot confirm",
       "don't know",
       "I am not sure",
-      "I am going to communicate the question to the owner"
+      "I am going to communicate the question to the owner",
+      "I will pass this question along to the owner"
     ];
 
     const isUncertain = hallucinationIndicators.some(indicator =>
       reply?.toLowerCase().includes(indicator.toLowerCase())
     );
 
+    console.log('replied', isUncertain, message  )
     if (isUncertain) {
+      console.log('Uncertain. Creating FAQ', message  )
       const userEmail = req.user?.email || null;
 
       await FAQ.create({

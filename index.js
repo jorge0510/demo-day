@@ -20,6 +20,11 @@ const authRoutes = require('./routes/auth');
 
 const { ensureAuth } = require('./middleware/auth');
 
+const Business = require('./models/Business');
+const FAQ = require('./models/FAQ');
+
+
+
 //Use .env file in config folder
 require("dotenv").config({ path: "./config/.env" });
 
@@ -56,14 +61,11 @@ app.use(passport.session());
 
 //Logging
 app.use(logger("dev"));
-
 //Use flash messages for errors, info, ect...
 app.use(flash());
 
 
 app.use('/featureRequests', featureRoutes);
-
-
 app.use('/api/businesses', apiRouter)
 app.use('/api/chat', apiChatRouter)
 app.use('/api/auth', authRoutes);
@@ -73,26 +75,24 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard', ensureAuth, async (req, res) => {
-  try {
-    const Business = require('./models/Business');
-    const Faq = require('./models/FAQ');
+  const user = req.user;
+  const businesses = await Business.find({ 'claimedBy.userId': user._id }).lean();
 
-    const business = await Business.findOne({ 'claimedBy.userId': req.user._id });
-    const faqs = business
-      ? await Faq.find({ business: business._id }).sort({ createdAt: -1 })
-      : [];
+  const selectedBusinessId = req.query.businessId || (businesses[0]?._id.toString());
+  const selectedBusiness = await Business.findById(selectedBusinessId)
+    .populate('claimedBy.userId')
+    .lean();
 
-    res.render('dashboard', {
-      user: req.user,
-      business,
-      faqs
-    });
-  } catch (err) {
-    console.error('Dashboard error:', err);
-    res.status(500).render('error/500');
-  }
+  const faqs = await FAQ.find({ business: selectedBusiness?._id, hidden: { $ne: true } }).sort({ createdAt: -1 }).lean();
+
+  if (selectedBusiness) selectedBusiness.faqs = faqs;
+
+  res.render('dashboard', {
+    user,
+    businesses,
+    selectedBusiness
+  });
 });
-
 
 app.get('/about', (req, res) => {
   res.render('about', { user: req.user });

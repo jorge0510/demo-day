@@ -31,6 +31,10 @@ const faqSchema = new Schema({
     type: Boolean,
     default: false
   },
+  hidden: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now
