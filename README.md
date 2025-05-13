@@ -24,15 +24,6 @@ Vozmia bridges the gap between automation and authenticity. We believe that the 
 
 ---
 
-## 🛠️ Tech Stack
-
-* **Frontend:** EJS, TailwindCSS, Vanilla JavaScript
-* **Backend:** Node.js, Express.js, MongoDB
-* **AI Integration:** OpenAI API
-* **Authentication:** Passport/Session-based login
-
----
-
 ### 🧠 How it Works
 - The AI doesn't assume—it **asks**.
 - Business owners train their assistant by answering questions like:  
@@ -54,6 +45,15 @@ Vozmia bridges the gap between automation and authenticity. We believe that the 
 
 ---
 
+## 🛠️ Tech Stack
+
+* **Frontend:** EJS, TailwindCSS, Vanilla JavaScript
+* **Backend:** Node.js, Express.js, MongoDB
+* **AI Integration:** Gemini API
+* **Authentication:** Passport/Session-based login
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -68,6 +68,7 @@ Vozmia bridges the gap between automation and authenticity. We believe that the 
 ├── index.js          # App entry point
 ├── Dockerfile        # Deployment setup
 └── README.md         # You’re here
+
 ```
 
 ---
