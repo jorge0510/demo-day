@@ -15,12 +15,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-700">
-  <!-- Header -->
+  <%- include('partials/modals/authModal') %>
+  
   <%- include('partials/header') %>
 
-  <!-- Timeline & Form Section -->
+  
   <main class="max-w-3xl mx-auto mt-10 px-4">
-    <!-- Feature Timeline -->
+    
     <section class="mb-10">
       <h2 class="text-xl font-semibold mb-4">Submitted Features</h2>
       <div class="border-l-2 border-gray-300 pl-4 space-y-6">
@@ -39,7 +40,7 @@
       </div>
     </section>
 
-    <!-- Submit New Feature -->
+    
     <section>
       <h2 class="text-xl font-semibold mb-4">Suggest a New Feature</h2>
       <% if (user) { %>
@@ -60,10 +61,7 @@
         <p class="text-sm text-red-500">You must have an account to submit a feature. <button id="openAuthModalBtnInline" class="text-blue-600 underline">Register / Login</button></p>
       <% } %>
     </section>
-  </main>
-
-  <!-- Optional Auth Modal (included once globally) -->
-  <%- include('partials/authModal') %>
+  </main>  
 
   <script type="module" src="/js/features.js"></script>
   <script type="module" src="/js/dropdown.js"></script>
