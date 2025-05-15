@@ -4,7 +4,6 @@
       <div class="p-6">
         <form action="/" method="GET">
           <div class="relative bg-white rounded-full border-1 border-gray-300">
-            
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -12,19 +11,10 @@
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.3-4.3"></path>
             </svg>
-        
-            
-            <input name="search" 
-                    class="flex h-10 w-full bg-background px-3 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-20 py-6 rounded-full border-gray-200 focus-visible:ring-yellow-500 focus-visible:border-yellow-300 text-lg"
-                    placeholder="Search..." type="text" value="<%= filterBy.search || ''%>">
-        
+            <input name="search" class="flex h-10 w-full bg-background px-3 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-20 py-6 rounded-full border-gray-200 focus-visible:ring-yellow-500 focus-visible:border-yellow-300 text-lg" placeholder="Search..." type="text" value="<%= filterBy.search || ''%>">
             <div class="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-              
               <input name="zipcode" type="text" placeholder="Zipcode" value="<%= filterBy.zipcode || ''%>" class="pr-6 rounded-full text-sm w-22 border border-gray-300 rounded px-2 py-1 focus:ring-yellow-500 focus:border-yellow-400" />
-        
-              
-              <button type="submit"
-                      class="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground h-10 py-2 rounded-full bg-yellow-500 hover:bg-yellow-600 px-4">
+              <button type="submit" class="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground h-10 py-2 rounded-full bg-yellow-500 hover:bg-yellow-600 px-4">
                 Search
               </button>
             </div>

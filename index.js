@@ -73,7 +73,6 @@ app.use('/api/businesses', apiRouter)
 app.use('/api/chat', apiChatRouter)
 app.use('/api/auth', authRoutes);
 
-
 app.get('/dashboard', ensureAuth, async (req, res) => {
   const user = req.user;
   const businesses = await Business.find({ 'claimedBy.userId': user._id }).lean();
@@ -88,6 +87,22 @@ app.get('/dashboard', ensureAuth, async (req, res) => {
   if (selectedBusiness) selectedBusiness.faqs = faqs;
 
   res.render('dashboard', {user,businesses,selectedBusiness});
+});
+
+app.get('/dashboard/faq', ensureAuth, async (req, res) => {
+  const user = req.user;
+  const businesses = await Business.find({ 'claimedBy.userId': user._id }).lean();
+
+  const selectedBusinessId = req.query.businessId || (businesses[0]?._id.toString());
+  const selectedBusiness = await Business.findById(selectedBusinessId)
+    .populate('claimedBy.userId')
+    .lean();
+
+  const faqs = await FAQ.find({ business: selectedBusiness?._id, hidden: { $ne: true } }).sort({ createdAt: -1 }).lean();
+
+  if (selectedBusiness) selectedBusiness.faqs = faqs;
+
+  res.render('faq', {user,businesses,selectedBusiness});
 });
 
 app.get('/about', (req, res) => { res.render('about', { user: req.user });
