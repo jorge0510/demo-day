@@ -201,6 +201,7 @@ exports.chatWithBusiness = async (req, res) => {
       "I cannot confirm",
       "don't know",
       "notify the owner",
+      "check with the owner",
       "I am going to communicate",
       "I will pass this question along"
     ];

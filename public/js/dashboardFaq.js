@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Handle ignore
     document.querySelectorAll('.ignore-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const id = button.dataset.ignore;
-        if (confirm('Are you sure you want to ignore this question?')) {
-          handleIgnore(id);
-        }
+        button.addEventListener('click', async () => {
+          const faqId = button.dataset.ignore;
+          const businessId = button.dataset.business;
+      
+          if (confirm('Are you sure you want to ignore this question?')) {
+            await handleIgnore(businessId, faqId);
+          }
+        });
       });
-    });
   
     // Handle reply toggle
     document.querySelectorAll('.reply-btn').forEach(button => {
@@ -43,6 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  function handleIgnore(id) {
-    window.location.href = `/api/businesses/ignore-faq/${id}`;
+  
+  async function handleIgnore(businessId, faqId) {
+    try {
+      const res = await fetch(`/api/businesses/${businessId}/faqs/${faqId}/hide`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (res.ok) {
+        const card = document.getElementById(`faqCard-${faqId}`);
+        if (card) card.remove();
+      } else {
+        alert('Failed to hide FAQ');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred.');
+    }
   }

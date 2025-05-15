@@ -71,7 +71,7 @@
                       </p>
                       <% if (faq.reply) { %>
                         <div class="bg-gray-100 text-sm text-gray-700 p-3 rounded mt-2">
-                          <strong>✅ Answer:</strong> <%= faq.reply %>
+                          <strong>Answer:</strong> <%= faq.reply %>
                           <p class="text-xs text-gray-400 mt-1">Replied at: <%= new Date(faq.repliedAt).toLocaleDateString() %></p>
                         </div>
                       <% } %>
@@ -80,7 +80,8 @@
                         <% if (!faq.reply) { %>
                           <button 
                             data-ignore="<%= faq._id %>" 
-                            class="ignore-btn inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-3 h-8">
+                            data-business="<%= selectedBusiness._id %>"
+                            class="ignore-btn cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-3 h-8">
                             <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-circle-x h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <circle cx="12" cy="12" r="10"></circle>
                               <path d="m15 9-6 6"></path>
@@ -92,7 +93,7 @@
 
                         <button 
                           data-reply="<%= faq._id %>" 
-                          class="reply-btn bg-black text-white inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary hover:bg-primary/90 rounded-md px-3 h-8">
+                          class="cursor-pointer reply-btn bg-black text-white inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary hover:bg-primary/90 rounded-md px-3 h-8">
                           <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-circle-check-big h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <path d="m9 11 3 3L22 4"></path>
@@ -105,7 +106,7 @@
                   <div class="mt-4 hidden reply-input-wrapper" id="replyInput-<%= faq._id %>">
                     <form action="/api/businesses/<%= selectedBusiness._id %>/faqs/<%= faq._id %>/reply" method="POST">
                       <textarea name="reply" placeholder="Type your reply..." class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500" required><%= faq.reply || '' %></textarea>
-                      <button type="submit" class="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm">
+                      <button type="submit" class="cursor-pointer mt-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm">
                         <%= faq.reply ? 'Update Reply' : 'Send Reply' %>
                       </button>
                     </form>
