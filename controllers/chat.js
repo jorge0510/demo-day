@@ -4,6 +4,100 @@ const FAQ = require('../models/FAQ');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+const cityToZip = {
+  'East Boston': '02128',
+  'Revere': '02151',
+  'Cambridge': '02139',
+  'Boston': '02118',
+};
+
+const generateVozmiaSystemPrompt = async (message, user = null) => {
+  const zipMatch = message.match(/\b\d{5}\b/);
+  let zipCode = zipMatch ? zipMatch[0] : null;
+
+  const knownCities = Object.keys(cityToZip);
+  const matchedCity = knownCities.find(city =>
+    message.toLowerCase().includes(city.toLowerCase())
+  );
+  if (!zipCode && matchedCity) {
+    zipCode = cityToZip[matchedCity];
+  }
+
+  const keywords = message.toLowerCase().split(/\s+/).filter(w => w.length > 2).slice(0, 5);
+  const knownCategories = ['Restaurants', 'Healthcare', 'Fitness', 'Technology', 'Professional Services'];
+  const matchedCategory = knownCategories.find(cat =>
+    message.toLowerCase().includes(cat.toLowerCase())
+  );
+
+  const businessMatch = await Business.findOne({
+    name: { $regex: new RegExp(keywords.join('|'), 'i') }
+  });
+
+  let businesses = [];
+  let shouldRedirect = false;
+  let redirectUrl = '';
+  let reply = '';
+
+  if (businessMatch) {
+    businesses = [businessMatch];
+    shouldRedirect = true;
+    redirectUrl = `/?search=${encodeURIComponent(businessMatch.name)}&zipcode=${businessMatch.zipCode || ''}`;
+    reply = `${businessMatch.name} in ${businessMatch.city || 'the area'} is a great ${businessMatch.category.toLowerCase()} option.`;
+  } else if (matchedCategory || zipCode) {
+    const query = {};
+    if (matchedCategory) query.category = matchedCategory;
+    if (zipCode) query.zipCode = zipCode;
+    businesses = await Business.find(query).limit(5);
+
+    if (businesses.length > 0) {
+      shouldRedirect = true;
+      reply = `Here are some ${matchedCategory || ''} businesses${zipCode ? ` in ZIP ${zipCode}` : ''}.`;
+
+      if (matchedCategory && zipCode) {
+        redirectUrl = `/?category=${encodeURIComponent(matchedCategory)}&zipcode=${zipCode}`;
+      } else if (matchedCategory) {
+        redirectUrl = `/?category=${encodeURIComponent(matchedCategory)}`;
+      } else if (zipCode) {
+        redirectUrl = `/?zipcode=${zipCode}`;
+      }
+    }
+  } else {
+    businesses = await Business.find({
+      $or: [
+        { name: new RegExp(keywords.join('|'), 'i') },
+        { category: new RegExp(keywords.join('|'), 'i') },
+        { description: new RegExp(keywords.join('|'), 'i') }
+      ]
+    }).limit(3);
+  }
+
+  const businessSummaries = businesses.map(b =>
+    `- ${b.name} (${b.category}) in ${b.city || 'N/A'}: ${b.description || 'No description available.'}`
+  ).join('\n');
+
+  const prompt = `
+You are VozmIA, a general business assistant AI.
+${user?.name ? `The current user is ${user.name}.` : ""}
+Help users find local businesses, answer general business-related questions, and offer guidance on navigating services.
+
+${businessSummaries
+    ? `Based on the user's message, here are some relevant businesses:\n${businessSummaries}`
+    : 'No specific businesses matched the query. Try asking about a category, ZIP code, or business name.'}
+
+Guidelines:
+- Be helpful, concise, and friendly.
+- Reference only the businesses listed above if available.
+- Never make up business info.
+- If no matches are found, politely suggest more specific terms.
+`;
+
+  return { prompt, shouldRedirect, redirectUrl, reply };
+};
+
+
+
+
+
 
 exports.chatWithBusiness = async (req, res) => {
   try {
@@ -68,16 +162,14 @@ exports.chatWithBusiness = async (req, res) => {
       - If you're unsure, say you'll notify the owner and offer to assist further.
       `;
     } else {
-      systemInstruction = `
-      You are VozmIA, a general business assistant AI.
-      Help users find local businesses, answer general business-related questions, and offer guidance on navigating services.
-      
-      Guidelines:
-      - You are neutral and do not represent any single business.
-      - Be helpful, concise, and friendly.
-      - If a question is specific to a business, suggest searching by name or category.
-      - Never make up business info.
-      `;
+      const { prompt, shouldRedirect, redirectUrl, reply } = await generateVozmiaSystemPrompt(message, req.user);
+
+      if (shouldRedirect) {
+        const fullUrl = `${redirectUrl}&reply=${encodeURIComponent(reply)}`;
+        return res.json({ redirect: fullUrl });
+      }
+
+      systemInstruction = prompt;
     }
 
     const convertRole = (role) => {
@@ -108,7 +200,7 @@ exports.chatWithBusiness = async (req, res) => {
       "Unfortunately",
       "I cannot confirm",
       "don't know",
-      "I am not sure",
+      "notify the owner",
       "I am going to communicate",
       "I will pass this question along"
     ];

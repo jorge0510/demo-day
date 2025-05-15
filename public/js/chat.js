@@ -1,4 +1,6 @@
 
+const stripMarkdown = md => md.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/[_~`>#-]/g, '').replace(/\n+/g, ' ').trim();
+
 document.addEventListener('DOMContentLoaded', () => {
   let currentBusinessName = 'VozmIA';
   let currentBusinessId = '';
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
         if (isSystemMessage) {
           bubble.className = 'w-full text-gray-500 italic text-sm text-center';
-          bubble.innerText = text;
+          bubble.innerText = stripMarkdown(text);;
         } else {
           
           bubble.classList.add('bg-gray-100', 'text-gray-800');
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
     
         if (currentBusinessId !== businessId) {
-          addChatBubble('ai', `${currentBusinessName || "VozmIA"}'s assistant has entered the chat`, true);
+          addChatBubble('ai', `${currentBusinessName || "VozmIA"}'s assistant has left the chat`, true);
           resetAll();
 
           currentBusinessId = businessId;
@@ -210,6 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await res.json();
           chatMessages.removeChild(typingBubble);
 
+          if (data.redirect) {
+            window.location.href = data.redirect;
+            return;
+          }
+
           if (!res.ok || !data.reply) {
             addChatBubble('ai', 'Sorry, something went wrong. Please try again.');
           } else {
@@ -254,7 +261,31 @@ if (suggestionsContainer) {
   }
 }
   
-  
+function loadChatFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const reply = params.get('reply');
+  const historyRaw = params.get('history');
 
+  if (historyRaw) {
+    try {
+      const history = JSON.parse(decodeURIComponent(historyRaw));
+      history.forEach(entry => {
+        addChatBubble(entry.role, entry.text);
+      });
+    } catch (e) {
+      console.error("Failed to parse history:", e);
+    }
+  }
+
+  if (reply && !historyRaw) {
+    addChatBubble('ai', decodeURIComponent(reply));
+  }
+
+  if (!reply && !historyRaw) {
     onVozmiaEnter()
+  } 
+}
+  
+loadChatFromURL();
+    
 })
