@@ -14,11 +14,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-50 text-gray-800">
+  <%- include('partials/modals/addBusinessModal') %>
   <%- include('partials/header') %>
 
   <div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow border border-gray-300">
-    <h1 class="text-2xl font-semibold mb-6 text-yellow-500">Your Business FAQ Dashboard</h1>
-
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-semibold text-yellow-500">Your Business FAQ Dashboard</h1>
+      <a id="openAddBusinessModalBtn" href="#" class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-4 py-2 rounded shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Business
+      </a>
+    </div>
     <% if (businesses.length === 0) { %>
       <p class="text-gray-500">You haven't claimed any businesses yet.</p>
     <% } else { %>
@@ -79,9 +87,8 @@
     <% } %>
   </div>
 
-  <footer class="mt-12 text-center text-sm text-gray-400 py-4 border-t border-gray-300">
-    &copy; <%= new Date().getFullYear() %> Vozmia. All rights reserved.
-  </footer>
+  <%- include('partials/footer') %>
+  <script type="module" src="/js/addBusinessModal.js"></script>
   <script type="module" src="/js/dropdown.js"></script>
 </body>
 </html>
