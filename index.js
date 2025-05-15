@@ -22,7 +22,10 @@ const { ensureAuth } = require('./middleware/auth');
 
 const Business = require('./models/Business');
 const FAQ = require('./models/FAQ');
+const DeveloperContact = require('./models/DeveloperContact');
 
+
+const businessController = require("./controllers/businesses");
 
 
 //Use .env file in config folder
@@ -70,9 +73,6 @@ app.use('/api/businesses', apiRouter)
 app.use('/api/chat', apiChatRouter)
 app.use('/api/auth', authRoutes);
 
-app.get('/', (req, res) => {
-  res.render('index', { user: req.user || null, messages: req.flash() });
-});
 
 app.get('/dashboard', ensureAuth, async (req, res) => {
   const user = req.user;
@@ -87,20 +87,28 @@ app.get('/dashboard', ensureAuth, async (req, res) => {
 
   if (selectedBusiness) selectedBusiness.faqs = faqs;
 
-  res.render('dashboard', {
-    user,
-    businesses,
-    selectedBusiness
-  });
+  res.render('dashboard', {user,businesses,selectedBusiness});
 });
 
-app.get('/about', (req, res) => {
-  res.render('about', { user: req.user });
+app.get('/about', (req, res) => { res.render('about', { user: req.user });
 });
 
-app.get('/developers', (req, res) => {
-  res.render('developers', { user: req.user });
+app.get('/developers', (req, res) => { res.render('developers', { user: req.user }) });
+
+app.post('/developers/contact', async (req, res) => {
+  try {
+      const { name, email, message } = req.body;
+      const newMessage = new DeveloperContact({ name, email, message });
+      await newMessage.save();
+      
+      res.redirect('/developers'); 
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
 });
+
+
+app.get('/', businessController.getAllBusinesses);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

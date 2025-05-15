@@ -3,25 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/css/styles.css" rel="stylesheet">
+  
   <title>Feature Requests</title> 
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="/css/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-700">
   <!-- Header -->
-  <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-    <!-- Left section: Title -->
-    <h1 class="text-lg font-semibold">Feature Requests</h1>
-  
-    <!-- Right section: Link and Auth -->
-    <div class="flex items-center gap-4 ml-auto">
-      <a href="/" class="text-sm text-gray-600 hover:underline">Home</a>
-      <% if (user) { %>
-        <div class="text-sm text-gray-700">Welcome, <%= user.name %></div>
-      <% } else { %>
-        <button id="openAuthModalBtn" class="text-sm text-blue-600 underline">Register / Login</button>
-      <% } %>
-    </div>
-  </header>
+  <%- include('partials/header') %>
 
   <!-- Timeline & Form Section -->
   <main class="max-w-3xl mx-auto mt-10 px-4">
@@ -71,5 +66,6 @@
   <%- include('partials/authModal') %>
 
   <script type="module" src="/js/features.js"></script>
+  <script type="module" src="/js/dropdown.js"></script>
 </body>
 </html>

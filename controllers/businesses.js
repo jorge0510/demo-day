@@ -20,17 +20,29 @@ exports.createBusiness = async (req, res) => {
   }
 };
 
-// Get all businesses with optional filtering and pagination
+//Get all businesses v2
 exports.getAllBusinesses = async (req, res) => {
   try {
     const { category, zipcode, search, page = 1, limit = 10 } = req.query;
+
+    // Build filterBy object to pass to view
+    const filterBy = {};
+    if (category) filterBy.category = category;
+    if (zipcode) filterBy.zipcode = zipcode;
+    if (search) filterBy.search = search;
+
+    // If no filters, return empty result
+    if (Object.keys(filterBy).length === 0) {
+      return res.render('v2/index', {  user: req.user || null, results: [], filterBy });
+    }
+
+    // Build DB query
     const query = {};
+    if (filterBy.category) query.category = filterBy.category;
+    if (filterBy.zipcode) query.zipCode = { $regex: filterBy.zipcode, $options: 'i' };
 
-    if (category) query.category = category;
-    if (zipcode) query.zipCode = { $regex: zipcode, $options: 'i' };
-
-    if (search) {
-      const searchRegex = new RegExp(search, 'i');
+    if (filterBy.search) {
+      const searchRegex = new RegExp(filterBy.search, 'i');
       query.$or = [
         { name: searchRegex },
         { description: searchRegex },
@@ -42,12 +54,13 @@ exports.getAllBusinesses = async (req, res) => {
     const businesses = await Business.find(query)
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
-
-    res.status(200).json(businesses);
+    console.log("im here")
+    res.render('v2/index', { user: req.user || null, results: businesses, filterBy });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).send('Server Error');
   }
 };
+
 
 // Get a single business by ID
 exports.getBusinessById = async (req, res) => {

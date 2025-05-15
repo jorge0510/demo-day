@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vozmia | FAQ Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="/css/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <header class="bg-white border-b border-gray-300 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="/" class="text-xl font-bold text-yellow-500">Vozmia</a>
-      <nav class="space-x-4 text-sm">
-        <a href="/dashboard" class="text-gray-600 hover:text-black">Dashboard</a>
-        <a href="/logout" class="text-gray-600 hover:text-black">Logout</a>
-      </nav>
-    </div>
-  </header>
+  <%- include('partials/header') %>
 
   <div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow border border-gray-300">
     <h1 class="text-2xl font-semibold mb-6 text-yellow-500">Your Business FAQ Dashboard</h1>
@@ -83,5 +82,6 @@
   <footer class="mt-12 text-center text-sm text-gray-400 py-4 border-t border-gray-300">
     &copy; <%= new Date().getFullYear() %> Vozmia. All rights reserved.
   </footer>
+  <script type="module" src="/js/dropdown.js"></script>
 </body>
 </html>
