@@ -1,441 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VozmIA | Business Directory</title>
   
-  <title>Vozmia - Index</title>
-  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link href="/css/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  
   <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white text-center">
-  <%- include('partials/addBusinessModal') %>
-  <%- include('partials/claimBusinessModal') %>
-  <%- include('partials/authModal') %>
-  <%- include('partials/reviewModal') %>
-  <%- include('partials/zipModal') %>
-  <%- include('partials/chatModal') %>
 
 
-  <main class="min-h-screen bg-white">
-    <div>
-      <header class="relative mb-12 overflow-hidden w-full">
-        <div class="absolute inset-0 bg-gradient-to-r from-yellow-50 via-yellow-100 to-yellow-50 opacity-70"></div>
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
-          <div class="absolute -top-4 -left-4 w-24 h-24 rounded-full bg-yellow-300 opacity-20"></div>
-          <div class="absolute top-1/2 right-10 w-32 h-32 rounded-full bg-yellow-400 opacity-10"></div>
-          <div class="absolute bottom-0 left-1/3 w-40 h-40 rounded-full bg-yellow-200 opacity-20"></div>
-        </div>
-        <div class="relative max-w-7xl mx-auto px-4 py-12 md:py-16">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <!-- NAVBAR -->
-            <nav class="flex items-center justify-between h-16 relative">
-              <!-- Logo or left links -->
-              <div class="flex items-center gap-6">
-                <a href="/about" class="hidden md:inline cursor-pointer text-sm text-gray-400 hover:text-black font-medium">About</a>
-                <a href="/featureRequests" class="hidden md:inline cursor-pointer text-sm text-gray-400 hover:text-black font-medium">Feature Request</a>
-              </div>
 
-              <!-- Mobile Menu Toggle -->
-              <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-gray-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-yellow-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"/>
-                  </svg>
-                </button>
-              </div>
+<body class="bg-white min-h-screen flex flex-col justify-between relative overflow-hidden">
+  <%- include('partials/modals/reviewModal') %>
+  <%- include('partials/modals/authModal') %>
+  <%- include('partials/modals/claimBusinessModal') %>
 
-              <!-- Right Links -->
-              <div class="hidden md:flex items-center gap-6">
-                <a href="/developers" class="text-sm text-gray-400 hover:text-black font-medium">Developers</a>
+  <!-- Background Layer -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-r from-yellow-50 via-yellow-100 to-yellow-50 opacity-70"></div>
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+      <div class="absolute -top-4 -left-4 w-24 h-24 rounded-full bg-yellow-300 opacity-20"></div>
+      <div class="absolute top-1/2 right-10 w-32 h-32 rounded-full bg-yellow-400 opacity-10"></div>
+      <div class="absolute bottom-0 left-1/3 w-40 h-40 rounded-full bg-yellow-200 opacity-20"></div>
+    </div>
+  </div>
 
-                <% if (user) { %>
-                  <div class="relative group text-sm text-gray-400 cursor-pointer">
-                    <div class="hover:underline">Welcome, <%= user.name %></div>
-                    
-                    <!-- Dropdown Menu -->
-                    <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md hidden group-hover:block z-50">
-                      <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                      <a href="/api/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
-                    </div>
-                  </div>
-                <% } else { %>
-                  <a id="authModalButton" href="#" class="text-sm text-gray-400 hover:underline font-medium">Register/LogIn</a>
-                <% } %>
-              </div>
-            </nav>
+  <!-- Main Content -->
+  <main class="min-h-screen flex flex-col relative z-10">
+    <div class="flex flex-col min-h-screen">
+      
+      <%- include('partials/header') %>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="md:hidden hidden flex-col gap-4 mt-4">
-              <a href="/about" class="block text-sm text-gray-500 hover:text-black">About</a>
-              <a href="/featureRequests" class="block text-sm text-gray-500 hover:text-black">Feature Request</a>
-              <a href="/developers" class="block text-sm text-gray-500 hover:text-black">Developers</a>
-              <% if (user) { %>
-                <a href="/dashboard" class="block text-sm text-gray-500 hover:text-black">Dashboard</a>
-                <a href="/api/auth/logout" class="block text-sm text-gray-500 hover:text-black">Logout</a>
-              <% } else { %>
-                <a id="authModalButtonMobile" href="#" class="block text-sm text-gray-500 hover:underline">Register/LogIn</a>
-              <% } %>
-            </div>
-        </div>
-          <div class="flex flex-col items-center text-center mb-8">
-            <!-- <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-4 shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-8 w-8 text-white">
-                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
-                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
-                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
-                <path d="M10 6h4"></path>
-                <path d="M10 10h4"></path>
-                <path d="M10 14h4"></path>
-                <path d="M10 18h4"></path>
-              </svg>
-            </div> -->
-            <h1 class="text-8xl md:text-8xl font-bold tracking-tight mb-3" style="font-family:Kdam Thmor Pro, sans-serif; font-weight: 700; font-style: normal;">
-              <span class="text-yellow-500">Voz</span>mIA
-            </h1>
-            <p class="text-muted-foreground max-w-2xl text-sm mb-2 flex text-gray-500">Discover and connect with places in <button id="openZipcodeModal" class="flex cursor-pointer items-center gap-1 text-sm text-gray-500 pl-3 hover:text-[#4793EB] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pinned h-4 w-4">
-                  <path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0"></path>
-                  <circle cx="12" cy="8" r="2"></circle>
-                  <path d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835"></path>
-                </svg>
-                <span class="zipText">02151</span>
-              </button>
-            </p>
-            <div class="relative w-full max-w-2xl mx-auto">
-              <div class="absolute inset-0 bg-white rounded-full shadow-xl opacity-90"></div>
-              <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-500 h-5 w-5">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
-                <form id="searchForm" class="flex gap-2">
-                  <input id="searchInput" autocomplete="off" class="flex h-10 w-full bg-background px-3 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-12 pr-32 py-6 rounded-full border-2 border-yellow-100 focus-visible:ring-yellow-500 focus-visible:border-yellow-300 text-lg shadow-sm" placeholder="Search..." type="text" value="">
-                  <button type="submit" class="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground absolute right-0 top-1/2 transform -translate-y-1/2 rounded-full bg-yellow-500 hover:bg-yellow-600 px-6 py-5 h-12 mr-0.5">Search</button>
-                </form>
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-2 mt-8">
-              <button data-category="Restaurants" class="categoryFilterBtn cursor-pointer bg-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 rounded-full border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coffee h-4 w-4">
-                  <path d="M10 2v2"></path>
-                  <path d="M14 2v2"></path>
-                  <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path>
-                  <path d="M6 2v2"></path>
-                </svg>Restaurants </button>
-              <button data-category="Technology" class="categoryFilterBtn  cursor-pointer bg-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 rounded-full border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop h-4 w-4">
-                  <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path>
-                </svg>Technology </button>
-              <button data-category="Healthcare" class="categoryFilterBtn  cursor-pointer bg-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 rounded-full border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-stethoscope h-4 w-4">
-                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
-                  <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
-                  <circle cx="20" cy="10" r="2"></circle>
-                </svg>Healthcare </button>
-              <button data-category="Fitness" class="categoryFilterBtn  cursor-pointer bg-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 rounded-full border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dumbbell h-4 w-4">
-                  <path d="M14.4 14.4 9.6 9.6"></path>
-                  <path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"></path>
-                  <path d="m21.5 21.5-1.4-1.4"></path>
-                  <path d="M3.9 3.9 2.5 2.5"></path>
-                  <path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"></path>
-                </svg>Fitness </button>
-              <button data-category="Professional Services" class="categoryFilterBtn cursor-pointer bg-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 rounded-full border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase h-4 w-4">
-                  <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                  <rect width="20" height="14" x="2" y="6" rx="2"></rect>
-                </svg>Professional Services </button>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div class="w-full mx-5 pr-15 px-4">
-        <div class="grid grid-cols-1 items-start content-start lg:grid-cols-[280px_1fr] gap-8">
-          <div class="hidden lg:block">
-            <div class="sticky top-8 space-y-6">
-              <div>
-                <h3 class="font-medium text-lg mb-3 text-left">Categories</h3>
-                <div class="space-y-2">
-                  <button data-category="" class="categoryFilterBtn cursor-pointer border-gray-200 border-1 text-white inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground h-10 px-4 py-2 w-full justify-start bg-yellow-500 hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe h-4 w-4 mr-2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                      <path d="M2 12h20"></path>
-                    </svg>All Categories </button>
-                  <button data-category="Restaurants" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coffee h-4 w-4">
-                      <path d="M10 2v2"></path>
-                      <path d="M14 2v2"></path>
-                      <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path>
-                      <path d="M6 2v2"></path>
-                    </svg>
-                    <span class="ml-2">Restaurants</span>
-                  </button>
-                  <button data-category="Technology" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop h-4 w-4">
-                      <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path>
-                    </svg>
-                    <span class="ml-2">Technology</span>
-                  </button>
-                  <button data-category="Healthcare" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-stethoscope h-4 w-4">
-                      <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
-                      <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
-                      <circle cx="20" cy="10" r="2"></circle>
-                    </svg>
-                    <span class="ml-2">Healthcare</span>
-                  </button>
-                  <button data-category="Fitness" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dumbbell h-4 w-4">
-                      <path d="M14.4 14.4 9.6 9.6"></path>
-                      <path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"></path>
-                      <path d="m21.5 21.5-1.4-1.4"></path>
-                      <path d="M3.9 3.9 2.5 2.5"></path>
-                      <path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"></path>
-                    </svg>
-                    <span class="ml-2">Fitness</span>
-                  </button>
-                  <button data-category="Professional Services" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase h-4 w-4">
-                      <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                      <rect width="20" height="14" x="2" y="6" rx="2"></rect>
-                    </svg>
-                    <span class="ml-2">Professional Services</span>
-                  </button>
-                  <button data-category="Retail" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag h-4 w-4">
-                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
-                      <path d="M3 6h18"></path>
-                      <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                    <span class="ml-2">Retail</span>
-                  </button>
-                  <button data-category="Automotive" class="categoryFilterBtn cursor-pointer border-gray-200 inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start hover:bg-yellow-600 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car h-4 w-4">
-                      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
-                      <circle cx="7" cy="17" r="2"></circle>
-                      <path d="M9 17h6"></path>
-                      <circle cx="17" cy="17" r="2"></circle>
-                    </svg>
-                    <span class="ml-2">Automotive</span>
-                  </button>
-                </div>
-              </div>
-              <div class="mt-8">
-                <h3 class="text-left font-medium text-lg mb-3">Featured Businesses</h3>
-                <div id="featuredBusinessesContainer" class="space-y-3"></div>
-              </div>
-              <div class="mt-8 border-t border-gray-200 pt-4">
-                <h3 class="text-left font-medium text-sm text-gray-600 mb-2">For Business Owners</h3>
-                <button id="openCreateBusinessModalBtn" class="cursor-pointer text-sm text-gray-500 hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-3 w-3">
-                    <path d="M5 12h14"></path>
-                    <path d="M12 5v14"></path>
-                  </svg>
-                  <span>Add your business</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="lg:hidden flex items-center justify-between mb-4">
-            <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 flex items-center gap-2" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«r0»" data-state="closed">Filters <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4">
-                <path d="m6 9 6 6 6-6"></path>
-              </svg>
-            </button>
-            <button type="button" role="combobox" aria-controls="radix-«r1p»" aria-expanded="false" aria-autocomplete="none" dir="ltr" data-state="closed" class="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:text-white focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:line-clamp-1 w-[180px]" data-placeholder="">
-              <span style="pointer-events: none;">All Categories</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 opacity-50" aria-hidden="true">
-                <path d="m6 9 6 6 6-6"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="space-y-6">
-            <div class="flex items-center justify-between">
-              <p class="text-muted-foreground"><span id="numberOfBusinesses">0</span> businesses found near <span class="zipText">02151</span></p>
-            </div>
-            <div id="businessListContainer" class="grid grid-cols-1 gap-4"></div>
-          </div>
-        </div>
-      </div>
+      <% if ((results && results.length > 0) || Object.keys(filterBy).length !== 0 ) { %>
+        <%- include('partials/mainSearchAndResults') %>
+      <% } else { %>
+        <%- include('partials/mainSearch') %>
+      <% } %>
+
+      <%- include('partials/footer') %>      
     </div>
   </main>
 
-  <footer class="bg-gray-50 border-t border-gray-200 mt-15 text-left">
-    <div class="container mx-auto px-4 py-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div>
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-4 w-4 text-white">
-                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
-                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
-                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
-                <path d="M10 6h4"></path>
-                <path d="M10 10h4"></path>
-                <path d="M10 14h4"></path>
-                <path d="M10 18h4"></path>
-              </svg>
-            </div>
-            <h3 class="font-semibold text-lg"><span class="text-yellow-500">Voz</span>mIA</h3>
-          </div>
-          <p class="text-sm text-gray-600 mb-4">Connecting local businesses with customers with minimal human intervention. Our platform helps you to connect with the best services in your area.</p>
-          <!-- <div class="flex space-x-3">
-            <a href="#" class="text-gray-400 hover:text-[#4793EB] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-5 w-5">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-              </svg>
-              <span class="sr-only">Facebook</span>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-[#4793EB] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-5 w-5">
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-              </svg>
-              <span class="sr-only">Twitter</span>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-[#4793EB] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram h-5 w-5">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-              </svg>
-              <span class="sr-only">Instagram</span>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-[#4793EB] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-5 w-5">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect width="4" height="12" x="2" y="9"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-              <span class="sr-only">LinkedIn</span>
-            </a>
-          </div> -->
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Quick Links</h3>
-          <ul class="space-y-2 text-sm">
-            <li>
-              <a href="#" class="text-gray-600 hover:text-[#4793EB] transition-colors">Home</a>
-            </li>
-            <li>
-              <a href="/about" class="text-gray-600 hover:text-[#4793EB] transition-colors">About Us</a>
-            </li>
-            <li>
-              <a href="/featureRequests" class="text-gray-600 hover:text-[#4793EB] transition-colors">Feature Requests</a>
-            </li>
-            <li>
-              <a href="/developers" class="text-gray-600 hover:text-[#4793EB] transition-colors">Developers</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Categories</h3>
-          <ul class="space-y-2 text-sm">
-            <li>
-              <button data-category="Restaurants" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coffee h-4 w-4">
-                  <path d="M10 2v2"></path>
-                  <path d="M14 2v2"></path>
-                  <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path>
-                  <path d="M6 2v2"></path>
-                </svg>
-                <span>Restaurants</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Technology" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop h-4 w-4">
-                  <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path>
-                </svg>
-                <span>Technology</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Healthcare" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-stethoscope h-4 w-4">
-                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
-                  <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
-                  <circle cx="20" cy="10" r="2"></circle>
-                </svg>
-                <span>Healthcare</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Fitness" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dumbbell h-4 w-4">
-                  <path d="M14.4 14.4 9.6 9.6"></path>
-                  <path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"></path>
-                  <path d="m21.5 21.5-1.4-1.4"></path>
-                  <path d="M3.9 3.9 2.5 2.5"></path>
-                  <path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"></path>
-                </svg>
-                <span>Fitness</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Professional Services" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase h-4 w-4">
-                  <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                  <rect width="20" height="14" x="2" y="6" rx="2"></rect>
-                </svg>
-                <span>Professional Services</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Retail" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag h-4 w-4">
-                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
-                  <path d="M3 6h18"></path>
-                  <path d="M16 10a4 4 0 0 1-8 0"></path>
-                </svg>
-                <span>Retail</span>
-              </button>
-            </li>
-            <li>
-              <button data-category="Automotive" class="categoryFilterBtn cursor-pointer px-3 rounded text-gray-600  hover:text-[#4793EB] transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car h-4 w-4">
-                  <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
-                  <circle cx="7" cy="17" r="2"></circle>
-                  <path d="M9 17h6"></path>
-                  <circle cx="17" cy="17" r="2"></circle>
-                </svg>
-                <span>Automotive</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Stay Updated</h3>
-          <p class="text-sm text-gray-600 mb-4">Subscribe to our newsletter for the latest business updates and promotions.</p>
-          <div class="flex">
-            <input class="flex h-10 w-full rounded-md border border-input border-gray-300 bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-l-md rounded-r-none border-r-0 focus-visible:ring-0 focus-visible:border-gray-300" placeholder="Your email address" type="email">
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 text-primary-foreground h-10 px-4 py-2 rounded-l-none bg-yellow-500 hover:bg-yellow-600">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div data-orientation="horizontal" role="none" class="shrink-0 bg-border h-[1px] w-full my-6"></div>
-      <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-        <p>© 2025 Vozmia, Inc. All rights reserved.</p>
-        <div class="flex space-x-4 mt-4 md:mt-0">
-          <!-- <a href="#" class="hover:text-[#4793EB] transition-colors">Privacy Policy</a>
-          <a href="#" class="hover:text-[#4793EB] transition-colors">Terms of Service</a>
-          <a href="#" class="hover:text-[#4793EB] transition-colors">Cookie Policy</a> -->
-        </div>
-      </div>
-    </div>
-  </footer>
+  <script type="module" src="/js/claimBusinessModal.js"></script>
+  <script type="module" src="/js/authModal.js"></script>
+  <script type="module" src="/js/reviewModal.js"></script>
+  <script type="module" src="/js/dropdown.js"></script>
+  <script type="module" src="/js/mainSearchTabs.js"></script>
+  <script type="module" src="/js/chat.js"></script>
 
-  <script type="module" src="/js/main.js"></script>
 </body>
+
 </html>

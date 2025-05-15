@@ -20,7 +20,7 @@ exports.createBusiness = async (req, res) => {
   }
 };
 
-//Get all businesses v2
+
 exports.getAllBusinesses = async (req, res) => {
   try {
     const { category, zipcode, search, page = 1, limit = 10 } = req.query;
@@ -33,7 +33,7 @@ exports.getAllBusinesses = async (req, res) => {
 
     // If no filters, return empty result
     if (Object.keys(filterBy).length === 0) {
-      return res.render('v2/index', {  user: req.user || null, results: [], filterBy });
+      return res.render('index', {  user: req.user || null, results: [], filterBy });
     }
 
     // Build DB query
@@ -54,8 +54,8 @@ exports.getAllBusinesses = async (req, res) => {
     const businesses = await Business.find(query)
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
-    console.log("im here")
-    res.render('v2/index', { user: req.user || null, results: businesses, filterBy });
+    
+    res.render('index', { user: req.user || null, results: businesses, filterBy });
   } catch (error) {
     res.status(500).send('Server Error');
   }
